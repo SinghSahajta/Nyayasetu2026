@@ -293,10 +293,16 @@ html:not(.dark) .cursor-glow {
 .cursor-texture { display: none; }
 html:not(.dark) .cursor-texture {
   display: block; position: fixed; inset: 0; z-index: 1499; pointer-events: none;
-  background-image: radial-gradient(rgba(14, 101, 119, .55) 1px, transparent 1.4px);
+  background-image: radial-gradient(rgba(14, 101, 119, .13) 1px, transparent 1.4px);
   background-size: 22px 22px;
-  -webkit-mask-image: radial-gradient(300px circle at var(--mx, 50%) var(--my, -30%), #000, transparent 70%);
-  mask-image: radial-gradient(300px circle at var(--mx, 50%) var(--my, -30%), #000, transparent 70%);
+}
+/* Same dots, much stronger, but only in a circle around the cursor. */
+html:not(.dark) .cursor-texture::after {
+  content: ''; position: absolute; inset: 0;
+  background-image: radial-gradient(rgba(14, 101, 119, .85) 1.7px, transparent 2.1px);
+  background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(320px circle at var(--mx, 50%) var(--my, -30%), #000, transparent 70%);
+  mask-image: radial-gradient(320px circle at var(--mx, 50%) var(--my, -30%), #000, transparent 70%);
 }
 /* A faint paper grain on the smoke background. */
 html:not(.dark) .hero-smoke {
