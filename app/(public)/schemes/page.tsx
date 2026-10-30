@@ -52,10 +52,10 @@ export default function SchemesPage() {
   return (
     <div className="min-h-screen bg-gray-50 animate-fadeIn">
       {/* Header */}
-      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
-        <div className="max-w-6xl mx-auto px-4 py-10">
-          <h1 className="text-3xl font-bold mb-2">{t('schemes.title')}</h1>
-          <p className="text-indigo-200 text-sm">
+      <div className="hero-smoke border-b border-slate-200">
+        <div className="max-w-6xl mx-auto px-4 py-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">{t('schemes.title')}</h1>
+          <p className="text-gray-600 text-sm">
             {t('schemes.subtitle')}
           </p>
 
@@ -67,9 +67,8 @@ export default function SchemesPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t('schemes.searchPlaceholder')}
-              className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-white/10 backdrop-blur-sm
-                border border-white/20 text-white placeholder-indigo-200
-                outline-none focus:bg-white/20 focus:border-white/40 transition-all"
+              className="glass-input w-full pl-12 pr-4 py-3.5 rounded-xl text-gray-900 placeholder-gray-500
+                outline-none focus:border-indigo-500 transition-all"
             />
           </div>
         </div>

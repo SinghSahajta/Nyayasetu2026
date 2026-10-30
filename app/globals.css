@@ -271,3 +271,16 @@ h1, h2, h3 {
   border-color: rgba(var(--glow), .85);
   box-shadow: 0 0 0 1px rgba(var(--glow), .45), 0 0 56px -4px rgba(var(--glow), .6), inset 0 1px 0 rgba(255, 255, 255, .08);
 }
+
+/* Frosted search field (schemes header). */
+.glass-input {
+  background: rgba(255, 255, 255, .55);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(14, 101, 119, .3);
+  box-shadow: 0 8px 28px -12px rgba(14, 101, 119, .35);
+}
+.dark .glass-input {
+  background: rgba(21, 36, 43, .55);
+  border-color: rgba(var(--glow), .35);
+  box-shadow: 0 0 28px -8px rgba(var(--glow), .35), inset 0 1px 0 rgba(255, 255, 255, .06);
+}

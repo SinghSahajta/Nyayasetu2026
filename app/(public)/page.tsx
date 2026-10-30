@@ -13,11 +13,11 @@ interface TopIssue { uid: string; title: string; city: string | null; priority_b
 
 // Points come from the real weights in lib/priority.ts, so this page can't drift from the scoring code.
 const FACTORS = [
-  { icon: AlertTriangle, name: 'Severity', max: WEIGHTS.severity, line: 'An open manhole outranks a faded sign.', bar: 'bg-red-500' },
-  { icon: Users, name: 'Reports & confirmations', max: WEIGHTS.frequency, line: 'Verified reports push it up. Spam cannot.', bar: 'bg-indigo-500' },
-  { icon: MapPin, name: 'Location sensitivity', max: WEIGHTS.location, line: 'Schools, hospitals and main roads count more.', bar: 'bg-amber-500' },
-  { icon: Clock, name: 'Time pressure', max: WEIGHTS.time, line: 'The longer it waits, the higher it climbs.', bar: 'bg-orange-500' },
-  { icon: CloudRain, name: 'Seasonal risk', max: WEIGHTS.season, line: 'Blocked drains matter more in monsoon.', bar: 'bg-sky-500' },
+  { icon: AlertTriangle, name: 'Severity', max: WEIGHTS.severity, line: 'An open manhole outranks a faded sign.' },
+  { icon: Users, name: 'Reports & confirmations', max: WEIGHTS.frequency, line: 'Verified reports push it up. Spam cannot.' },
+  { icon: MapPin, name: 'Location sensitivity', max: WEIGHTS.location, line: 'Schools, hospitals and main roads count more.' },
+  { icon: Clock, name: 'Time pressure', max: WEIGHTS.time, line: 'The longer it waits, the higher it climbs.' },
+  { icon: CloudRain, name: 'Seasonal risk', max: WEIGHTS.season, line: 'Blocked drains matter more in monsoon.' },
 ];
 
 const TRUST = [
@@ -40,7 +40,10 @@ export default function LandingPage() {
   // The pinned headline fades out as the list slides up behind it.
   useEffect(() => {
     const onScroll = () => {
-      if (hero.current) hero.current.style.opacity = String(Math.max(0, 1 - window.scrollY / (window.innerHeight * 0.5)));
+      if (!hero.current) return;
+      const p = Math.min(1, window.scrollY / (window.innerHeight * 0.55));
+      hero.current.style.opacity = String(1 - p);
+      hero.current.style.filter = `blur(${p * 14}px)`;
     };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -83,7 +86,7 @@ export default function LandingPage() {
           <p className="mt-10 text-sm text-gray-500 inline-flex items-center gap-2"><ArrowDown className="w-4 h-4 animate-bounce" /> See what is being fixed right now</p>
         </div>
 
-        <div className="relative z-20 max-w-3xl mx-auto px-4 pb-24">
+        <div className="relative z-40 max-w-3xl mx-auto px-4 pb-24">
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-base font-semibold text-gray-900">{t('landing.v2.topNow', { defaultValue: 'Highest priority right now' })}</h2>
@@ -153,22 +156,16 @@ export default function LandingPage() {
           <h2 className="text-3xl font-bold text-gray-900">How the priority score works</h2>
           <p className="text-gray-600 mt-3">Transparent by design: five factors, fixed weights, a written reason for each one.</p>
 
-          <div className="mt-8 flex h-4 rounded-full overflow-hidden gap-0.5" role="img" aria-label="How the 100 points are split">
-            {FACTORS.map((f) => <div key={f.name} className={f.bar} style={{ width: `${f.max}%` }} title={`${f.name}: up to ${f.max}`} />)}
-          </div>
-
-          <ul className="mt-6 grid md:grid-cols-5 gap-4">
+          <div className="mt-8 grid md:grid-cols-5 gap-4">
             {FACTORS.map((f) => (
-              <li key={f.name} className="bg-white rounded-xl border border-slate-200 p-4">
-                <span className="flex items-center gap-2">
-                  <span className={`h-2.5 w-2.5 rounded-full ${f.bar}`} aria-hidden />
-                  <span className="text-xs font-semibold text-gray-500">UP TO {f.max}</span>
-                </span>
-                <p className="mt-2 font-semibold text-gray-900 leading-snug">{f.name}</p>
-                <p className="text-sm text-gray-600 mt-1">{f.line}</p>
-              </li>
+              <div key={f.name} className="bg-white rounded-xl border border-slate-200 p-5">
+                <f.icon className="w-5 h-5 text-indigo-700" />
+                <p className="mt-3 font-semibold text-gray-900">{f.name}</p>
+                <p className="text-sm text-indigo-800 font-medium">up to {f.max} pts</p>
+                <p className="text-xs text-gray-600 mt-2">{f.line}</p>
+              </div>
             ))}
-          </ul>
+          </div>
 
           <p className="mt-6 text-sm text-gray-600">
             Bands: P1 Critical ≥ 70, P2 High ≥ 50, P3 Medium ≥ 30, P4 Low.
