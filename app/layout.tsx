@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Fraunces, Montserrat } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/components/layout/LanguageProvider";
 import ThemeToggle from "@/components/layout/ThemeToggle";
@@ -14,6 +15,9 @@ const geistMono = localFont({
   variable: "--font-geist-mono",
   weight: "100 900",
 });
+
+const body = Montserrat({ subsets: ["latin"], variable: "--font-body", display: "swap" });
+const heading = Fraunces({ subsets: ["latin"], variable: "--font-heading", display: "swap" });
 
 export const metadata: Metadata = {
   title: "NyayaSetu: report civic issues, track them to resolution",
@@ -32,7 +36,7 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: "try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark')}catch(e){}" }} />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${body.variable} ${heading.variable} antialiased`}
       >
         <ThemeToggle />
         <LanguageProvider>
