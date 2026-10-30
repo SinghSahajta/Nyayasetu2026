@@ -13,22 +13,25 @@ interface Props {
   influence?: number;  // px over which neighbours magnify
   radius?: number;
   height?: number;     // component height in px
+  barHeight?: number;  // slice height at rest, as a fraction of height
+  sweep?: boolean;     // idle: glide a magnifying focus back and forth (off = slices rest until hovered)
   onOpenChange?: (index: number) => void; // -1 when closed
 }
 
-const spring = { stiff: 0.14, damp: 0.78 }; // slight overshoot, settles quickly
+// Exponential easing, no overshoot: slices glide to their size instead of springing.
+const EASE = 0.085;
+const POINTER_EASE = 0.07; // the pointer itself is smoothed too, so quick mouse moves never make slices jump
 const falloff = (d: number, influence: number) => (d >= influence ? 0 : (Math.cos((Math.PI * d) / influence) + 1) / 2);
 
 /**
  * A dock of photo slices. The slice under the pointer swells (and so do its neighbours);
- * click one to open the full photo while the others blur and dim. Idle, a magnifying
- * focus sweeps back and forth. Keyboard: Tab to a slice, Enter opens, Esc closes.
+ * click one to open the full photo while the others blur and dim. Keyboard: Tab to a slice, Enter opens, Esc closes.
  */
-export default function ElasticReel({ items, barWidth = 44, gap = 10, magnify = 2.4, lift = 1.15, influence = 200, radius = 12, height = 460, onOpenChange }: Props) {
+export default function ElasticReel({ items, barWidth = 44, gap = 10, magnify = 2.4, lift = 1.15, influence = 200, radius = 12, height = 460, barHeight = 0.5, sweep = false, onOpenChange }: Props) {
   const root = useRef<HTMLDivElement>(null);
   const bars = useRef<(HTMLButtonElement | null)[]>([]);
-  const state = useRef({ px: null as number | null, hovering: false, open: -1, hoverIdx: -1 });
-  const motion = useRef(items.map(() => ({ w: 0, wv: 0, h: 0, hv: 0, y: 0, yv: 0, blur: 0, dim: 0 })));
+  const state = useRef({ px: null as number | null, spx: null as number | null, hovering: false, open: -1, hoverIdx: -1 });
+  const motion = useRef(items.map(() => ({ w: 0, h: 0, y: 0, blur: 0, dim: 0 })));
   const [open, setOpen] = useState(-1);
   const [label, setLabel] = useState<number>(-1);
   const reduced = useRef(false);
@@ -47,34 +50,34 @@ export default function ElasticReel({ items, barWidth = 44, gap = 10, magnify = 
       const n = items.length;
       const bw = Math.min(barWidth, (W - gap * (n - 1)) / n);
       const isOpen = s.open >= 0;
-      const baseH = isOpen ? 64 : height * 0.5;
+      const baseH = isOpen ? 64 : height * barHeight;
       // Rest-layout centres decide how strongly each slice reacts to the pointer.
       const restTotal = n * bw + (n - 1) * gap;
       const restLeft = (W - restTotal) / 2;
-      let px = s.px;
-      if (px == null || (!s.hovering && !reduced.current && !isOpen)) {
-        // idle sweep
-        px = W / 2 + Math.sin(((now - start) / 1000) * 0.9) * (restTotal / 2);
-      }
+      // Where the magnifying focus is: the (smoothed) pointer, an idle sweep, or nowhere (all slices at rest).
+      let want: number | null = s.hovering ? s.px : null;
+      if (want == null && sweep && !reduced.current && !isOpen) want = W / 2 + Math.sin(((now - start) / 1000) * 0.35) * (restTotal / 2);
+      if (want != null) s.spx = s.spx == null ? want : s.spx + (want - s.spx) * POINTER_EASE;
+      const px = want == null ? null : s.spx;
       const targets = items.map((_, i) => {
         const c = restLeft + i * (bw + gap) + bw / 2;
-        const f = isOpen && i !== s.hoverIdx ? 0 : falloff(Math.abs(px! - c), influence);
+        const f = px == null || (isOpen && i !== s.hoverIdx) ? 0 : falloff(Math.abs(px - c), influence);
         return { f, w: bw * (1 + (magnify - 1) * f), h: baseH * (1 + (lift - 1) * f) };
       });
-      const total = targets.reduce((a, t) => a + t.w, 0) + gap * (n - 1);
+      // Never let the magnified row spill past the edges: squeeze every slice evenly if it would.
+      const widthSum = targets.reduce((a, t) => a + t.w, 0);
+      const fit = Math.min(1, (W - 32 - gap * (n - 1)) / widthSum);
+      targets.forEach((t) => { t.w *= fit; });
+      const total = widthSum * fit + gap * (n - 1);
       let x = (W - total) / 2;
       const rowY = isOpen ? height - baseH / 2 - 14 : height / 2;
 
       targets.forEach((t, i) => {
         const m = motion.current[i];
         if (m.w === 0) { m.w = bw; m.h = baseH; m.y = rowY; }
-        const step = (cur: number, vel: number, target: number) => {
-          const v = (vel + (target - cur) * spring.stiff) * spring.damp;
-          return [cur + v, v] as const;
-        };
-        [m.w, m.wv] = step(m.w, m.wv, t.w);
-        [m.h, m.hv] = step(m.h, m.hv, t.h);
-        [m.y, m.yv] = step(m.y, m.yv, rowY);
+        m.w += (t.w - m.w) * EASE;
+        m.h += (t.h - m.h) * EASE;
+        m.y += (rowY - m.y) * EASE;
         const hovered = i === s.hoverIdx;
         const wantBlur = isOpen && !hovered && i !== s.open ? 2.5 : 0;
         const wantDim = isOpen && !hovered && i !== s.open ? 0.45 : 0;
@@ -95,7 +98,7 @@ export default function ElasticReel({ items, barWidth = 44, gap = 10, magnify = 
     };
     raf = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(raf);
-  }, [items, barWidth, gap, magnify, lift, influence, radius, height]);
+  }, [items, barWidth, gap, magnify, lift, influence, radius, height, barHeight, sweep]);
 
   const onMove = (e: React.PointerEvent) => {
     const r = root.current!.getBoundingClientRect();

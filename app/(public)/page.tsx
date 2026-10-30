@@ -88,7 +88,7 @@ export default function LandingPage() {
         <div ref={hero} className="sticky top-[72px] z-30 h-[calc(100vh-72px)] overflow-hidden">
           {/* Reel fills the hero; the veil keeps the headline readable. Pointer events pass through the text to the reel. */}
           <div className="absolute inset-0 z-0">
-            <ElasticReel items={REEL} height={reelH} barWidth={86} gap={18} influence={280} magnify={2.3} radius={16} onOpenChange={(i) => setReelOpen(i >= 0)} />
+            <ElasticReel items={REEL} height={reelH} barWidth={116} gap={20} barHeight={0.68} influence={360} magnify={2.0} lift={1.12} radius={20} onOpenChange={(i) => setReelOpen(i >= 0)} />
           </div>
           <div className="hero-veil absolute inset-0 z-[1] pointer-events-none transition-opacity duration-500" style={{ opacity: reelOpen ? 0 : 1 }} />
           <div className={`relative z-10 h-full flex flex-col items-center justify-center text-center px-4 pointer-events-none transition-opacity duration-500 ${reelOpen ? 'opacity-0' : 'opacity-100'}`}>
