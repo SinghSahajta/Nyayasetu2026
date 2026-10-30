@@ -292,7 +292,7 @@ html:not(.dark) .cursor-glow {
 }
 .cursor-texture { display: none; }
 html:not(.dark) .cursor-texture {
-  display: block; position: fixed; inset: 0; z-index: 1499; pointer-events: none;
+  display: block; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background-image: radial-gradient(rgba(14, 101, 119, .13) 1px, transparent 1.4px);
   background-size: 22px 22px;
   background-position: calc(var(--px, 0) * -24px) calc(var(--py, 0) * -24px);
@@ -322,4 +322,14 @@ html:not(.dark) .bg-white.rounded-xl:not(.glow-card), html:not(.dark) .bg-white.
 html:not(.dark) .bg-white.rounded-xl:not(.glow-card):hover, html:not(.dark) .bg-white.rounded-2xl:not(.glow-card):hover {
   border-color: rgba(14, 101, 119, .5);
   box-shadow: 0 0 0 1px rgba(14, 101, 119, .15), 0 12px 32px -10px rgba(14, 101, 119, .5);
+}
+
+/* Light mode: the dot layer sits behind the page, so page-wide backgrounds must let it show through.
+   Cards (bg-white rounded) stay opaque and cover the dots. */
+html:not(.dark) .hero-smoke,
+html:not(.dark) section.bg-white,
+html:not(.dark) section.bg-gray-50,
+html:not(.dark) .min-h-screen.bg-gray-50,
+html:not(.dark) .min-h-screen.bg-white {
+  background-color: transparent;
 }
