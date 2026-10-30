@@ -98,9 +98,8 @@ export default function SchemesPage() {
             <button
               onClick={() => setIsModalOpen(true)}
               className="flex items-center gap-2 px-5 py-2.5 rounded-full
-                bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm
-                font-semibold hover:from-amber-600 hover:to-orange-600 transition-all
-                shadow-lg shadow-orange-200"
+                bg-amber-400 text-gray-900 text-sm
+                font-semibold hover:bg-amber-500 transition-all shadow-md"
             >
               <Sparkles className="w-4 h-4" />
               {t('schemes.recommendTitle')}
