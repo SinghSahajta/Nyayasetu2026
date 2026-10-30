@@ -13,11 +13,11 @@ interface TopIssue { uid: string; title: string; city: string | null; priority_b
 
 // Points come from the real weights in lib/priority.ts, so this page can't drift from the scoring code.
 const FACTORS = [
-  { icon: AlertTriangle, name: 'How dangerous', max: WEIGHTS.severity, line: 'An open manhole outranks a faded sign.', bar: 'bg-red-500' },
-  { icon: Users, name: 'How many people report it', max: WEIGHTS.frequency, line: 'Verified reports push it up. Spam cannot.', bar: 'bg-indigo-500' },
-  { icon: MapPin, name: 'What is nearby', max: WEIGHTS.location, line: 'Schools, hospitals and main roads count more.', bar: 'bg-amber-500' },
-  { icon: Clock, name: 'How long it has waited', max: WEIGHTS.time, line: 'The longer it waits, the higher it climbs.', bar: 'bg-orange-500' },
-  { icon: CloudRain, name: 'Season', max: WEIGHTS.season, line: 'Blocked drains matter more in monsoon.', bar: 'bg-sky-500' },
+  { icon: AlertTriangle, name: 'Severity', max: WEIGHTS.severity, line: 'An open manhole outranks a faded sign.', bar: 'bg-red-500' },
+  { icon: Users, name: 'Reports & confirmations', max: WEIGHTS.frequency, line: 'Verified reports push it up. Spam cannot.', bar: 'bg-indigo-500' },
+  { icon: MapPin, name: 'Location sensitivity', max: WEIGHTS.location, line: 'Schools, hospitals and main roads count more.', bar: 'bg-amber-500' },
+  { icon: Clock, name: 'Time pressure', max: WEIGHTS.time, line: 'The longer it waits, the higher it climbs.', bar: 'bg-orange-500' },
+  { icon: CloudRain, name: 'Seasonal risk', max: WEIGHTS.season, line: 'Blocked drains matter more in monsoon.', bar: 'bg-sky-500' },
 ];
 
 const TRUST = [
@@ -150,8 +150,8 @@ export default function LandingPage() {
       {/* Scoring, in plain words */}
       <section className="py-20 bg-gray-50 border-t border-slate-200">
         <div className="max-w-5xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-gray-900">Who gets fixed first? Here is exactly how we decide.</h2>
-          <p className="text-gray-600 mt-3">Every report is scored out of 100 using five things. Nothing else.</p>
+          <h2 className="text-3xl font-bold text-gray-900">How the priority score works</h2>
+          <p className="text-gray-600 mt-3">Transparent by design: five factors, fixed weights, a written reason for each one.</p>
 
           <div className="mt-8 flex h-4 rounded-full overflow-hidden gap-0.5" role="img" aria-label="How the 100 points are split">
             {FACTORS.map((f) => <div key={f.name} className={f.bar} style={{ width: `${f.max}%` }} title={`${f.name}: up to ${f.max}`} />)}
@@ -171,7 +171,7 @@ export default function LandingPage() {
           </ul>
 
           <p className="mt-6 text-sm text-gray-600">
-            <span className="font-semibold text-gray-900">70+ Critical</span> · 50+ High · 30+ Medium · below that Low
+            Bands: P1 Critical ≥ 70, P2 High ≥ 50, P3 Medium ≥ 30, P4 Low.
           </p>
 
           <div className="mt-10 grid md:grid-cols-3 gap-4">
