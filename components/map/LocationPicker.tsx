@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { inIndia } from '@/lib/geo';
 
 export interface LatLng { lat: number; lng: number }
 
@@ -17,8 +18,11 @@ const pin = L.divIcon({
 
 const INDIA_CENTER: LatLng = { lat: 22.5, lng: 79 };
 
-function ClickToPlace({ onChange }: { onChange: (p: LatLng) => void }) {
-  useMapEvents({ click: (e) => onChange({ lat: e.latlng.lat, lng: e.latlng.lng }) });
+// Pins outside India are refused (the API enforces it too); onOutside lets the form say so.
+function ClickToPlace({ onChange, onOutside }: { onChange: (p: LatLng) => void; onOutside?: () => void }) {
+  useMapEvents({
+    click: (e) => (inIndia(e.latlng.lat, e.latlng.lng) ? onChange({ lat: e.latlng.lat, lng: e.latlng.lng }) : onOutside?.()),
+  });
   return null;
 }
 
@@ -31,23 +35,26 @@ function FlyTo({ value }: { value: LatLng | null }) {
 }
 
 /** Click the map or drag the pin to set the issue location. */
-export default function LocationPicker({ value, onChange }: { value: LatLng | null; onChange: (p: LatLng) => void }) {
+export default function LocationPicker({ value, onChange, onOutside }: { value: LatLng | null; onChange: (p: LatLng) => void; onOutside?: () => void }) {
   return (
     <MapContainer
       center={value ? [value.lat, value.lng] : [INDIA_CENTER.lat, INDIA_CENTER.lng]}
       zoom={value ? 17 : 5}
       className="h-72 w-full rounded-lg border border-gray-300 z-0"
       scrollWheelZoom={false}
+      minZoom={4}
+      maxBounds={[[5, 67], [38.5, 98.5]]}
+      maxBoundsViscosity={1}
     >
       <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      <ClickToPlace onChange={onChange} />
+      <ClickToPlace onChange={onChange} onOutside={onOutside} />
       <FlyTo value={value} />
       {value && (
         <Marker
           position={[value.lat, value.lng]}
           icon={pin}
           draggable
-          eventHandlers={{ dragend: (e) => { const p = (e.target as L.Marker).getLatLng(); onChange({ lat: p.lat, lng: p.lng }); } }}
+          eventHandlers={{ dragend: (e) => { const m = e.target as L.Marker; const p = m.getLatLng(); if (inIndia(p.lat, p.lng)) onChange({ lat: p.lat, lng: p.lng }); else { onOutside?.(); if (value) m.setLatLng([value.lat, value.lng]); } } }}
         />
       )}
     </MapContainer>

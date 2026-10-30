@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { MapPin, ArrowRight, AlertTriangle, Users, Clock, CloudRain, Camera, ListOrdered, CheckCircle2, MessageSquare } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { WEIGHTS } from '@/lib/priority';
-import { PriorityBadge } from '@/components/priority/PriorityBreakdown';
+import { PriorityWhy } from '@/components/priority/PriorityBreakdown';
 import type { PriorityBand } from '@/types';
 
 interface Overall { total: number; open: number; resolved: number; overdue: number; on_time_rate: number | null; avg_resolution_hours: number | null }
@@ -76,7 +76,7 @@ export default function LandingPage() {
                         <span className="block text-sm font-medium text-gray-900 truncate">{i.title}</span>
                         <span className="block text-xs text-gray-500">{i.city ?? ''}{i.confirmations ? ` · ${i.confirmations} confirmation${i.confirmations === 1 ? '' : 's'}` : ''}</span>
                       </span>
-                      <PriorityBadge band={i.priority_band} score={i.priority_score} />
+                      <PriorityWhy uid={i.uid} band={i.priority_band} score={i.priority_score} />
                     </Link>
                   </li>
                 ))}

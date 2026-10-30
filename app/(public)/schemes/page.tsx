@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Search, Sparkles, FilterX } from 'lucide-react';
 import type { Scheme, SchemeCategory } from '@/types';
 import SchemeCard from '@/components/schemes/SchemeCard';
+import SchemeAdvisor from '@/components/schemes/SchemeAdvisor';
 import RecommendationModal from '@/components/schemes/RecommendationModal';
 import { useTranslation } from 'react-i18next';
 
@@ -75,6 +76,8 @@ export default function SchemesPage() {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 py-8">
+        <SchemeAdvisor />
+
         {/* Category Chips + Recommend Button */}
         <div className="flex flex-wrap items-center gap-2 mb-6">
           {CATEGORY_FILTERS.map((cat) => (

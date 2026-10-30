@@ -16,9 +16,9 @@ export async function POST(request: NextRequest) {
 
     // Validate phone is 10 digits
     const phoneClean = phone.replace(/\s+/g, '');
-    if (!/^\d{10}$/.test(phoneClean)) {
+    if (!/^[6-9]\d{9}$/.test(phoneClean)) {
       return NextResponse.json(
-        { success: false, message: 'Phone number must be exactly 10 digits.' },
+        { success: false, message: 'Enter a valid 10-digit Indian mobile number (starts with 6-9).' },
         { status: 400 }
       );
     }

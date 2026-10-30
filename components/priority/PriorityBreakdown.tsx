@@ -1,8 +1,10 @@
 'use client';
 
-import React from 'react';
-import { AlertTriangle, MapPin, Users, Clock, CloudRain } from 'lucide-react';
-import type { PriorityBand, PriorityFactor } from '@/types';
+import React, { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import Link from 'next/link';
+import { AlertTriangle, MapPin, Users, Clock, CloudRain, Info, Loader2, X } from 'lucide-react';
+import type { AISeverity, PriorityBand, PriorityFactor } from '@/types';
 
 // Band colours follow the status palette; the label always travels with the colour.
 export const BAND_STYLE: Record<PriorityBand, { label: string; hex: string; pill: string }> = {
@@ -66,5 +68,81 @@ export default function PriorityBreakdown({ score, band, factors }: { score: num
         })}
       </ul>
     </div>
+  );
+}
+
+interface WhyData { factors: PriorityFactor[]; ai: AISeverity | null }
+
+/**
+ * The priority badge as a button: click it to see, in the public's own view, exactly why
+ * this issue got this score. Loads the breakdown from the public tracker endpoint on demand.
+ */
+export function PriorityWhy({ uid, band, score }: { uid: string; band: PriorityBand; score: number }) {
+  const [open, setOpen] = useState(false);
+  const [pos, setPos] = useState({ top: 0, left: 0 });
+  const [data, setData] = useState<WhyData | null>(null);
+  const [failed, setFailed] = useState(false);
+  const btn = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open]);
+
+  const toggle = (e: React.MouseEvent) => {
+    e.preventDefault(); // the badge sits inside links
+    e.stopPropagation();
+    if (open) return setOpen(false);
+    const r = btn.current!.getBoundingClientRect();
+    const width = Math.min(380, window.innerWidth - 16);
+    const below = window.innerHeight - r.bottom > 420 || r.top < 420;
+    setPos({
+      left: Math.max(8, Math.min(r.right - width, window.innerWidth - width - 8)),
+      top: below ? r.bottom + 8 : Math.max(8, r.top - 8 - 420),
+    });
+    setOpen(true);
+    if (!data && !failed) {
+      fetch(`/api/complaints/track/${uid}`)
+        .then((res) => res.json())
+        .then((d) => (d.success ? setData({ factors: d.complaint.priority_breakdown ?? [], ai: d.complaint.ai_severity }) : setFailed(true)))
+        .catch(() => setFailed(true));
+    }
+  };
+
+  return (
+    <>
+      <button ref={btn} type="button" onClick={toggle} title="Why this priority?" aria-label="Why this priority?" aria-expanded={open} className="inline-flex items-center gap-1 rounded-full hover:ring-2 hover:ring-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-300">
+        <PriorityBadge band={band} score={score} />
+        <Info className="w-3.5 h-3.5 text-indigo-500 -ml-0.5 mr-0.5" aria-hidden />
+      </button>
+      {open && createPortal(
+        <div className="fixed inset-0 z-[2000]" onClick={() => setOpen(false)}>
+          <div onClick={(e) => e.stopPropagation()} style={{ top: pos.top, left: pos.left, width: Math.min(380, window.innerWidth - 16) }} className="absolute max-h-[420px] overflow-y-auto rounded-xl shadow-2xl bg-white border border-slate-200">
+            <button type="button" onClick={() => setOpen(false)} aria-label="Close" className="absolute top-2 right-2 z-10 p-1 rounded-full text-gray-400 hover:text-gray-700"><X className="w-4 h-4" /></button>
+            {data ? (
+              <>
+                <PriorityBreakdown score={score} band={band} factors={data.factors} />
+                {data.ai?.reasoning && (
+                  <p className="px-5 pb-3 text-xs text-gray-600">
+                    <span className="font-semibold text-gray-800">Severity read: </span>{data.ai.severity}/5. {data.ai.reasoning}
+                  </p>
+                )}
+              </>
+            ) : failed ? (
+              <p className="p-5 text-sm text-gray-500">Could not load the breakdown. Try again.</p>
+            ) : (
+              <div className="flex justify-center p-8"><Loader2 className="w-5 h-5 animate-spin text-indigo-600" /></div>
+            )}
+            <div className="px-5 py-3 border-t border-gray-100 text-xs text-gray-500">
+              Same formula for every report, nobody sets scores by hand.{' '}
+              <Link href={`/issues/${uid}`} className="text-indigo-600 font-medium hover:underline">Open issue →</Link>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+    </>
   );
 }

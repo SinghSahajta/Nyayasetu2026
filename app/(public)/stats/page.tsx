@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { BAND_STYLE } from '@/components/priority/PriorityBreakdown';
+import CityScores from '@/components/accountability/CityScores';
 import { COMPLAINT_CATEGORIES } from '@/constants/categories';
 import type { PriorityBand } from '@/types';
 
@@ -89,6 +90,8 @@ export default function StatsPage() {
             ))}
           </div>
         </div>
+
+        <CityScores cities={stats.by_city} />
 
         <Table title="By city" rows={stats.by_city} nameOf={(n) => n} />
         <Table title="By category" rows={stats.by_category} nameOf={catLabel} />

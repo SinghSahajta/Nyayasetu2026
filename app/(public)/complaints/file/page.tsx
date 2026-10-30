@@ -382,7 +382,7 @@ export default function FileComplaintPage() {
                   {locating ? <Loader2 className="w-4 h-4 animate-spin" /> : <LocateFixed className="w-4 h-4" />} Use my location
                 </button>
               </div>
-              <LocationPicker value={location} onChange={handleLocation} />
+              <LocationPicker value={location} onChange={handleLocation} onOutside={() => setLocError('NyayaSetu only works inside India. Please pick a location within India.')} />
               <p className="text-xs text-gray-500 mt-1">
                 {location ? `Pinned at ${location.lat.toFixed(5)}, ${location.lng.toFixed(5)}. Drag the pin to adjust.` : 'Tap the map or use your location. Anywhere in India.'}
               </p>

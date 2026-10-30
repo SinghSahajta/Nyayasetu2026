@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { Loader2, Plus, ThumbsUp, ShieldAlert } from 'lucide-react';
-import { PriorityBadge, BAND_STYLE } from '@/components/priority/PriorityBreakdown';
+import { PriorityWhy, BAND_STYLE } from '@/components/priority/PriorityBreakdown';
 import { COMPLAINT_CATEGORIES } from '@/constants/categories';
 import type { MapIssue } from '@/components/map/IssuesMap';
 import type { PriorityBand } from '@/types';
@@ -115,7 +115,7 @@ export default function IssuesPage() {
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-2">
                         <p className="text-sm font-medium text-gray-900 truncate">{i.title}</p>
-                        <PriorityBadge band={i.priority_band} score={i.priority_score} />
+                        <PriorityWhy uid={i.uid} band={i.priority_band} score={i.priority_score} />
                       </div>
                       <p className="text-xs text-gray-500 mt-0.5 flex items-center gap-2">
                         <span>{label(i.category)}</span>

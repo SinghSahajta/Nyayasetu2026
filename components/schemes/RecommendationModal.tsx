@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Loader2, Sparkles, ArrowRight, ArrowLeft, CheckCircle } from 'lucide-react';
 import type { SchemeRecommendResult } from '@/types';
 import SchemeCard from '@/components/schemes/SchemeCard';
@@ -133,7 +134,9 @@ export default function RecommendationModal({ isOpen, onClose }: RecommendationM
     );
   }
 
-  return (
+  // Portal: the page wrapper animates with a transform, which would otherwise pin
+  // this fixed overlay to the page instead of the screen.
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
       <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
@@ -299,6 +302,7 @@ export default function RecommendationModal({ isOpen, onClose }: RecommendationM
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

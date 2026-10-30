@@ -8,6 +8,8 @@ import PriorityBreakdown, { PriorityBadge } from '@/components/priority/Priority
 import StatusTimeline from '@/components/complaints/StatusTimeline';
 import SLACountdown from '@/components/complaints/SLACountdown';
 import CitizenFeedback from '@/components/complaints/CitizenFeedback';
+import AuditLog from '@/components/accountability/AuditLog';
+import RtiDraft from '@/components/accountability/RtiDraft';
 import PhoneVerifyFlow from '@/components/complaints/PhoneVerifyFlow';
 import { COMPLAINT_CATEGORIES } from '@/constants/categories';
 import type { Complaint, ComplaintStatus, ComplaintTimelineEntry } from '@/types';
@@ -154,6 +156,8 @@ export default function IssuePage({ params }: { params: { uid: string } }) {
               <StatusTimeline updates={data.updates} currentStatus={c.status as ComplaintStatus} />
             </div>
 
+            <AuditLog uid={c.uid} />
+
             {done && <CitizenFeedback complaintId={c.id} existingRating={c.citizen_rating} existingFeedback={null} />}
           </div>
 
@@ -172,6 +176,8 @@ export default function IssuePage({ params }: { params: { uid: string } }) {
               <p className="flex items-center gap-2 text-gray-700"><User className="w-4 h-4 text-gray-400" /> {data.officer_name ?? 'Officer not assigned yet'}</p>
               <p className="flex items-center gap-2 text-gray-700"><ThumbsUp className="w-4 h-4 text-gray-400" /> {c.confirmations === 1 ? '1 person' : `${c.confirmations} people`} confirmed this</p>
             </div>
+
+            {!done && (c.is_escalated || new Date(c.sla_deadline) < new Date()) && <RtiDraft uid={c.uid} />}
 
             {!done && (
               <div className="bg-white rounded-xl border border-slate-200 p-5">

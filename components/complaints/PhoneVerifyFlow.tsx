@@ -35,8 +35,8 @@ export default function PhoneVerifyFlow({ onVerified }: PhoneVerifyFlowProps) {
     setError('');
     const phoneClean = phone.replace(/\s+/g, '');
 
-    if (!/^\d{10}$/.test(phoneClean)) {
-      setError('Please enter a valid 10-digit phone number.');
+    if (!/^[6-9]\d{9}$/.test(phoneClean)) {
+      setError('Enter a valid 10-digit Indian mobile number (starts with 6, 7, 8 or 9).');
       return;
     }
 

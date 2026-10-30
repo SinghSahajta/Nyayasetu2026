@@ -4,7 +4,7 @@
 
 /* The UI is designed light-only (white cards, gray-900 text). The create-next-app
    dark-mode override turned inherited text near-white on those white surfaces,
-   so it is removed; color-scheme keeps form controls and scrollbars light too. */
+   so it is removed; color-scheme keeps form controls and scrollbars light too (dark: see bottom). */
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -36,3 +36,173 @@ body {
     transform: translateY(0);
   }
 }
+
+/* ---- Dark mode ----
+   Components use hardcoded light Tailwind colours, so dark mode remaps them here
+   instead of adding dark: variants to every file. Toggled by .dark on <html>. */
+.dark { color-scheme: dark; --background: #0f172a; --foreground: #e2e8f0; }
+.dark body { background: var(--background); color: var(--foreground); }
+.dark .bg-white,.dark .hover\:bg-white:hover{background-color:#111827}
+.dark .bg-gray-50,.dark .hover\:bg-gray-50:hover{background-color:#0f172a}
+.dark .bg-slate-50,.dark .hover\:bg-slate-50:hover{background-color:#0f172a}
+.dark .bg-gray-100,.dark .hover\:bg-gray-100:hover{background-color:#1e293b}
+.dark .bg-slate-100,.dark .hover\:bg-slate-100:hover{background-color:#1e293b}
+.dark .bg-gray-200,.dark .hover\:bg-gray-200:hover{background-color:#334155}
+.dark .text-gray-900,.dark .hover\:text-gray-900:hover,.dark .group:hover .group-hover\:text-gray-900{color:#f1f5f9}
+.dark .text-gray-800,.dark .hover\:text-gray-800:hover,.dark .group:hover .group-hover\:text-gray-800{color:#e2e8f0}
+.dark .text-gray-700,.dark .hover\:text-gray-700:hover,.dark .group:hover .group-hover\:text-gray-700{color:#cbd5e1}
+.dark .text-gray-600,.dark .hover\:text-gray-600:hover,.dark .group:hover .group-hover\:text-gray-600{color:#94a3b8}
+.dark .text-gray-500,.dark .hover\:text-gray-500:hover,.dark .group:hover .group-hover\:text-gray-500{color:#94a3b8}
+.dark .text-gray-400,.dark .hover\:text-gray-400:hover,.dark .group:hover .group-hover\:text-gray-400{color:#8396ad}
+.dark .text-gray-300,.dark .hover\:text-gray-300:hover,.dark .group:hover .group-hover\:text-gray-300{color:#64748b}
+.dark .text-slate-900,.dark .hover\:text-slate-900:hover,.dark .group:hover .group-hover\:text-slate-900{color:#f1f5f9}
+.dark .text-slate-800,.dark .hover\:text-slate-800:hover,.dark .group:hover .group-hover\:text-slate-800{color:#e2e8f0}
+.dark .text-slate-700,.dark .hover\:text-slate-700:hover,.dark .group:hover .group-hover\:text-slate-700{color:#cbd5e1}
+.dark .text-slate-600,.dark .hover\:text-slate-600:hover,.dark .group:hover .group-hover\:text-slate-600{color:#94a3b8}
+.dark .text-slate-500,.dark .hover\:text-slate-500:hover,.dark .group:hover .group-hover\:text-slate-500{color:#94a3b8}
+.dark .text-slate-400,.dark .hover\:text-slate-400:hover,.dark .group:hover .group-hover\:text-slate-400{color:#8396ad}
+.dark .border-gray-50{border-color:#1e293b}
+.dark .border-gray-100{border-color:#1e293b}
+.dark .border-gray-200{border-color:#334155}
+.dark .border-gray-300{border-color:#475569}
+.dark .border-slate-200{border-color:#334155}
+.dark .border-slate-300{border-color:#475569}
+.dark .divide-gray-100>:not([hidden])~:not([hidden]){border-color:#1e293b}
+.dark input,.dark textarea,.dark select{background-color:#0f172a;color:#e2e8f0;border-color:#475569}
+.dark input::placeholder,.dark textarea::placeholder,.dark .placeholder-gray-400::placeholder{color:#64748b}
+.dark .bg-red-50,.dark .hover\:bg-red-50:hover{background-color:rgba(239,68,68,0.12)}
+.dark .bg-red-100,.dark .hover\:bg-red-100:hover{background-color:rgba(239,68,68,0.2)}
+.dark .bg-red-200,.dark .hover\:bg-red-200:hover{background-color:rgba(239,68,68,0.3)}
+.dark .text-red-500,.dark .hover\:text-red-500:hover,.dark .group:hover .group-hover\:text-red-500{color:#fca5a5}
+.dark .text-red-600,.dark .hover\:text-red-600:hover,.dark .group:hover .group-hover\:text-red-600{color:#fca5a5}
+.dark .text-red-700,.dark .hover\:text-red-700:hover,.dark .group:hover .group-hover\:text-red-700{color:#fca5a5}
+.dark .text-red-800,.dark .hover\:text-red-800:hover,.dark .group:hover .group-hover\:text-red-800{color:#fca5a5}
+.dark .text-red-900,.dark .hover\:text-red-900:hover,.dark .group:hover .group-hover\:text-red-900{color:#fca5a5}
+.dark .border-red-100{border-color:rgba(239,68,68,.4)}
+.dark .border-red-200{border-color:rgba(239,68,68,.4)}
+.dark .border-red-300{border-color:rgba(239,68,68,.4)}
+.dark .bg-green-50,.dark .hover\:bg-green-50:hover{background-color:rgba(34,197,94,0.12)}
+.dark .bg-green-100,.dark .hover\:bg-green-100:hover{background-color:rgba(34,197,94,0.2)}
+.dark .bg-green-200,.dark .hover\:bg-green-200:hover{background-color:rgba(34,197,94,0.3)}
+.dark .text-green-500,.dark .hover\:text-green-500:hover,.dark .group:hover .group-hover\:text-green-500{color:#86efac}
+.dark .text-green-600,.dark .hover\:text-green-600:hover,.dark .group:hover .group-hover\:text-green-600{color:#86efac}
+.dark .text-green-700,.dark .hover\:text-green-700:hover,.dark .group:hover .group-hover\:text-green-700{color:#86efac}
+.dark .text-green-800,.dark .hover\:text-green-800:hover,.dark .group:hover .group-hover\:text-green-800{color:#86efac}
+.dark .text-green-900,.dark .hover\:text-green-900:hover,.dark .group:hover .group-hover\:text-green-900{color:#86efac}
+.dark .border-green-100{border-color:rgba(34,197,94,.4)}
+.dark .border-green-200{border-color:rgba(34,197,94,.4)}
+.dark .border-green-300{border-color:rgba(34,197,94,.4)}
+.dark .bg-indigo-50,.dark .hover\:bg-indigo-50:hover{background-color:rgba(99,102,241,0.12)}
+.dark .bg-indigo-100,.dark .hover\:bg-indigo-100:hover{background-color:rgba(99,102,241,0.2)}
+.dark .bg-indigo-200,.dark .hover\:bg-indigo-200:hover{background-color:rgba(99,102,241,0.3)}
+.dark .text-indigo-500,.dark .hover\:text-indigo-500:hover,.dark .group:hover .group-hover\:text-indigo-500{color:#a5b4fc}
+.dark .text-indigo-600,.dark .hover\:text-indigo-600:hover,.dark .group:hover .group-hover\:text-indigo-600{color:#a5b4fc}
+.dark .text-indigo-700,.dark .hover\:text-indigo-700:hover,.dark .group:hover .group-hover\:text-indigo-700{color:#a5b4fc}
+.dark .text-indigo-800,.dark .hover\:text-indigo-800:hover,.dark .group:hover .group-hover\:text-indigo-800{color:#a5b4fc}
+.dark .text-indigo-900,.dark .hover\:text-indigo-900:hover,.dark .group:hover .group-hover\:text-indigo-900{color:#a5b4fc}
+.dark .border-indigo-100{border-color:rgba(99,102,241,.4)}
+.dark .border-indigo-200{border-color:rgba(99,102,241,.4)}
+.dark .border-indigo-300{border-color:rgba(99,102,241,.4)}
+.dark .bg-purple-50,.dark .hover\:bg-purple-50:hover{background-color:rgba(168,85,247,0.12)}
+.dark .bg-purple-100,.dark .hover\:bg-purple-100:hover{background-color:rgba(168,85,247,0.2)}
+.dark .bg-purple-200,.dark .hover\:bg-purple-200:hover{background-color:rgba(168,85,247,0.3)}
+.dark .text-purple-500,.dark .hover\:text-purple-500:hover,.dark .group:hover .group-hover\:text-purple-500{color:#d8b4fe}
+.dark .text-purple-600,.dark .hover\:text-purple-600:hover,.dark .group:hover .group-hover\:text-purple-600{color:#d8b4fe}
+.dark .text-purple-700,.dark .hover\:text-purple-700:hover,.dark .group:hover .group-hover\:text-purple-700{color:#d8b4fe}
+.dark .text-purple-800,.dark .hover\:text-purple-800:hover,.dark .group:hover .group-hover\:text-purple-800{color:#d8b4fe}
+.dark .text-purple-900,.dark .hover\:text-purple-900:hover,.dark .group:hover .group-hover\:text-purple-900{color:#d8b4fe}
+.dark .border-purple-100{border-color:rgba(168,85,247,.4)}
+.dark .border-purple-200{border-color:rgba(168,85,247,.4)}
+.dark .border-purple-300{border-color:rgba(168,85,247,.4)}
+.dark .bg-amber-50,.dark .hover\:bg-amber-50:hover{background-color:rgba(245,158,11,0.12)}
+.dark .bg-amber-100,.dark .hover\:bg-amber-100:hover{background-color:rgba(245,158,11,0.2)}
+.dark .bg-amber-200,.dark .hover\:bg-amber-200:hover{background-color:rgba(245,158,11,0.3)}
+.dark .text-amber-500,.dark .hover\:text-amber-500:hover,.dark .group:hover .group-hover\:text-amber-500{color:#fcd34d}
+.dark .text-amber-600,.dark .hover\:text-amber-600:hover,.dark .group:hover .group-hover\:text-amber-600{color:#fcd34d}
+.dark .text-amber-700,.dark .hover\:text-amber-700:hover,.dark .group:hover .group-hover\:text-amber-700{color:#fcd34d}
+.dark .text-amber-800,.dark .hover\:text-amber-800:hover,.dark .group:hover .group-hover\:text-amber-800{color:#fcd34d}
+.dark .text-amber-900,.dark .hover\:text-amber-900:hover,.dark .group:hover .group-hover\:text-amber-900{color:#fcd34d}
+.dark .border-amber-100{border-color:rgba(245,158,11,.4)}
+.dark .border-amber-200{border-color:rgba(245,158,11,.4)}
+.dark .border-amber-300{border-color:rgba(245,158,11,.4)}
+.dark .bg-orange-50,.dark .hover\:bg-orange-50:hover{background-color:rgba(249,115,22,0.12)}
+.dark .bg-orange-100,.dark .hover\:bg-orange-100:hover{background-color:rgba(249,115,22,0.2)}
+.dark .bg-orange-200,.dark .hover\:bg-orange-200:hover{background-color:rgba(249,115,22,0.3)}
+.dark .text-orange-500,.dark .hover\:text-orange-500:hover,.dark .group:hover .group-hover\:text-orange-500{color:#fdba74}
+.dark .text-orange-600,.dark .hover\:text-orange-600:hover,.dark .group:hover .group-hover\:text-orange-600{color:#fdba74}
+.dark .text-orange-700,.dark .hover\:text-orange-700:hover,.dark .group:hover .group-hover\:text-orange-700{color:#fdba74}
+.dark .text-orange-800,.dark .hover\:text-orange-800:hover,.dark .group:hover .group-hover\:text-orange-800{color:#fdba74}
+.dark .text-orange-900,.dark .hover\:text-orange-900:hover,.dark .group:hover .group-hover\:text-orange-900{color:#fdba74}
+.dark .border-orange-100{border-color:rgba(249,115,22,.4)}
+.dark .border-orange-200{border-color:rgba(249,115,22,.4)}
+.dark .border-orange-300{border-color:rgba(249,115,22,.4)}
+.dark .bg-yellow-50,.dark .hover\:bg-yellow-50:hover{background-color:rgba(234,179,8,0.12)}
+.dark .bg-yellow-100,.dark .hover\:bg-yellow-100:hover{background-color:rgba(234,179,8,0.2)}
+.dark .bg-yellow-200,.dark .hover\:bg-yellow-200:hover{background-color:rgba(234,179,8,0.3)}
+.dark .text-yellow-500,.dark .hover\:text-yellow-500:hover,.dark .group:hover .group-hover\:text-yellow-500{color:#fde047}
+.dark .text-yellow-600,.dark .hover\:text-yellow-600:hover,.dark .group:hover .group-hover\:text-yellow-600{color:#fde047}
+.dark .text-yellow-700,.dark .hover\:text-yellow-700:hover,.dark .group:hover .group-hover\:text-yellow-700{color:#fde047}
+.dark .text-yellow-800,.dark .hover\:text-yellow-800:hover,.dark .group:hover .group-hover\:text-yellow-800{color:#fde047}
+.dark .text-yellow-900,.dark .hover\:text-yellow-900:hover,.dark .group:hover .group-hover\:text-yellow-900{color:#fde047}
+.dark .border-yellow-100{border-color:rgba(234,179,8,.4)}
+.dark .border-yellow-200{border-color:rgba(234,179,8,.4)}
+.dark .border-yellow-300{border-color:rgba(234,179,8,.4)}
+.dark .bg-blue-50,.dark .hover\:bg-blue-50:hover{background-color:rgba(59,130,246,0.12)}
+.dark .bg-blue-100,.dark .hover\:bg-blue-100:hover{background-color:rgba(59,130,246,0.2)}
+.dark .bg-blue-200,.dark .hover\:bg-blue-200:hover{background-color:rgba(59,130,246,0.3)}
+.dark .text-blue-500,.dark .hover\:text-blue-500:hover,.dark .group:hover .group-hover\:text-blue-500{color:#93c5fd}
+.dark .text-blue-600,.dark .hover\:text-blue-600:hover,.dark .group:hover .group-hover\:text-blue-600{color:#93c5fd}
+.dark .text-blue-700,.dark .hover\:text-blue-700:hover,.dark .group:hover .group-hover\:text-blue-700{color:#93c5fd}
+.dark .text-blue-800,.dark .hover\:text-blue-800:hover,.dark .group:hover .group-hover\:text-blue-800{color:#93c5fd}
+.dark .text-blue-900,.dark .hover\:text-blue-900:hover,.dark .group:hover .group-hover\:text-blue-900{color:#93c5fd}
+.dark .border-blue-100{border-color:rgba(59,130,246,.4)}
+.dark .border-blue-200{border-color:rgba(59,130,246,.4)}
+.dark .border-blue-300{border-color:rgba(59,130,246,.4)}
+.dark .bg-emerald-50,.dark .hover\:bg-emerald-50:hover{background-color:rgba(16,185,129,0.12)}
+.dark .bg-emerald-100,.dark .hover\:bg-emerald-100:hover{background-color:rgba(16,185,129,0.2)}
+.dark .bg-emerald-200,.dark .hover\:bg-emerald-200:hover{background-color:rgba(16,185,129,0.3)}
+.dark .text-emerald-500,.dark .hover\:text-emerald-500:hover,.dark .group:hover .group-hover\:text-emerald-500{color:#6ee7b7}
+.dark .text-emerald-600,.dark .hover\:text-emerald-600:hover,.dark .group:hover .group-hover\:text-emerald-600{color:#6ee7b7}
+.dark .text-emerald-700,.dark .hover\:text-emerald-700:hover,.dark .group:hover .group-hover\:text-emerald-700{color:#6ee7b7}
+.dark .text-emerald-800,.dark .hover\:text-emerald-800:hover,.dark .group:hover .group-hover\:text-emerald-800{color:#6ee7b7}
+.dark .text-emerald-900,.dark .hover\:text-emerald-900:hover,.dark .group:hover .group-hover\:text-emerald-900{color:#6ee7b7}
+.dark .border-emerald-100{border-color:rgba(16,185,129,.4)}
+.dark .border-emerald-200{border-color:rgba(16,185,129,.4)}
+.dark .border-emerald-300{border-color:rgba(16,185,129,.4)}
+.dark .bg-rose-50,.dark .hover\:bg-rose-50:hover{background-color:rgba(244,63,94,0.12)}
+.dark .bg-rose-100,.dark .hover\:bg-rose-100:hover{background-color:rgba(244,63,94,0.2)}
+.dark .bg-rose-200,.dark .hover\:bg-rose-200:hover{background-color:rgba(244,63,94,0.3)}
+.dark .text-rose-500,.dark .hover\:text-rose-500:hover,.dark .group:hover .group-hover\:text-rose-500{color:#fda4af}
+.dark .text-rose-600,.dark .hover\:text-rose-600:hover,.dark .group:hover .group-hover\:text-rose-600{color:#fda4af}
+.dark .text-rose-700,.dark .hover\:text-rose-700:hover,.dark .group:hover .group-hover\:text-rose-700{color:#fda4af}
+.dark .text-rose-800,.dark .hover\:text-rose-800:hover,.dark .group:hover .group-hover\:text-rose-800{color:#fda4af}
+.dark .text-rose-900,.dark .hover\:text-rose-900:hover,.dark .group:hover .group-hover\:text-rose-900{color:#fda4af}
+.dark .border-rose-100{border-color:rgba(244,63,94,.4)}
+.dark .border-rose-200{border-color:rgba(244,63,94,.4)}
+.dark .border-rose-300{border-color:rgba(244,63,94,.4)}
+.dark .bg-pink-50,.dark .hover\:bg-pink-50:hover{background-color:rgba(236,72,153,0.12)}
+.dark .bg-pink-100,.dark .hover\:bg-pink-100:hover{background-color:rgba(236,72,153,0.2)}
+.dark .bg-pink-200,.dark .hover\:bg-pink-200:hover{background-color:rgba(236,72,153,0.3)}
+.dark .text-pink-500,.dark .hover\:text-pink-500:hover,.dark .group:hover .group-hover\:text-pink-500{color:#f9a8d4}
+.dark .text-pink-600,.dark .hover\:text-pink-600:hover,.dark .group:hover .group-hover\:text-pink-600{color:#f9a8d4}
+.dark .text-pink-700,.dark .hover\:text-pink-700:hover,.dark .group:hover .group-hover\:text-pink-700{color:#f9a8d4}
+.dark .text-pink-800,.dark .hover\:text-pink-800:hover,.dark .group:hover .group-hover\:text-pink-800{color:#f9a8d4}
+.dark .text-pink-900,.dark .hover\:text-pink-900:hover,.dark .group:hover .group-hover\:text-pink-900{color:#f9a8d4}
+.dark .border-pink-100{border-color:rgba(236,72,153,.4)}
+.dark .border-pink-200{border-color:rgba(236,72,153,.4)}
+.dark .border-pink-300{border-color:rgba(236,72,153,.4)}
+.dark .bg-lime-50,.dark .hover\:bg-lime-50:hover{background-color:rgba(132,204,22,0.12)}
+.dark .bg-lime-100,.dark .hover\:bg-lime-100:hover{background-color:rgba(132,204,22,0.2)}
+.dark .bg-lime-200,.dark .hover\:bg-lime-200:hover{background-color:rgba(132,204,22,0.3)}
+.dark .text-lime-500,.dark .hover\:text-lime-500:hover,.dark .group:hover .group-hover\:text-lime-500{color:#bef264}
+.dark .text-lime-600,.dark .hover\:text-lime-600:hover,.dark .group:hover .group-hover\:text-lime-600{color:#bef264}
+.dark .text-lime-700,.dark .hover\:text-lime-700:hover,.dark .group:hover .group-hover\:text-lime-700{color:#bef264}
+.dark .text-lime-800,.dark .hover\:text-lime-800:hover,.dark .group:hover .group-hover\:text-lime-800{color:#bef264}
+.dark .text-lime-900,.dark .hover\:text-lime-900:hover,.dark .group:hover .group-hover\:text-lime-900{color:#bef264}
+.dark .border-lime-100{border-color:rgba(132,204,22,.4)}
+.dark .border-lime-200{border-color:rgba(132,204,22,.4)}
+.dark .border-lime-300{border-color:rgba(132,204,22,.4)}
+.dark .from-indigo-50,.dark .from-slate-50{--tw-gradient-from:#0f172a var(--tw-gradient-from-position);--tw-gradient-to:rgb(15 23 42 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}
+.dark .to-indigo-50,.dark .to-white{--tw-gradient-to:#111827 var(--tw-gradient-to-position)}
+.dark .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) saturate(.55) brightness(.9) contrast(.9)}
+.dark .leaflet-container{background:#1f2937}

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { LanguageProvider } from "@/components/layout/LanguageProvider";
+import ThemeToggle from "@/components/layout/ThemeToggle";
 import DemoBanner from "@/components/layout/DemoBanner";
 
 const geistSans = localFont({
@@ -27,11 +28,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: "try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark')}catch(e){}" }} />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <DemoBanner />
+        <ThemeToggle />
         <LanguageProvider>
           {children}
         </LanguageProvider>
