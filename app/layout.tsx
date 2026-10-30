@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Fraunces, Montserrat } from "next/font/google";
+import { Alice, Montserrat } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/components/layout/LanguageProvider";
 import ThemeToggle from "@/components/layout/ThemeToggle";
@@ -17,7 +17,7 @@ const geistMono = localFont({
 });
 
 const body = Montserrat({ subsets: ["latin"], variable: "--font-body", display: "swap" });
-const heading = Fraunces({ subsets: ["latin"], variable: "--font-heading", display: "swap" });
+const heading = Alice({ subsets: ["latin"], weight: "400", variable: "--font-heading", display: "swap" });
 
 export const metadata: Metadata = {
   title: "NyayaSetu: report civic issues, track them to resolution",
