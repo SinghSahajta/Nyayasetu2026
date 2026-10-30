@@ -333,3 +333,8 @@ html:not(.dark) .min-h-screen.bg-gray-50,
 html:not(.dark) .min-h-screen.bg-white {
   background-color: transparent;
 }
+
+/* Home hero: the reel sits behind the headline, a veil keeps the text legible. No dots on this page. */
+html[data-no-dots] .cursor-texture { display: none !important; }
+.hero-veil { background: radial-gradient(ellipse 60% 55% at 50% 50%, rgba(241, 245, 246, .86), rgba(241, 245, 246, .55) 70%, rgba(241, 245, 246, .35)); }
+.dark .hero-veil { background: radial-gradient(ellipse 60% 55% at 50% 50%, rgba(14, 26, 32, .88), rgba(14, 26, 32, .6) 70%, rgba(14, 26, 32, .4)); }

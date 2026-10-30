@@ -13,6 +13,7 @@ interface Props {
   influence?: number;  // px over which neighbours magnify
   radius?: number;
   height?: number;     // component height in px
+  onOpenChange?: (index: number) => void; // -1 when closed
 }
 
 const spring = { stiff: 0.14, damp: 0.78 }; // slight overshoot, settles quickly
@@ -23,7 +24,7 @@ const falloff = (d: number, influence: number) => (d >= influence ? 0 : (Math.co
  * click one to open the full photo while the others blur and dim. Idle, a magnifying
  * focus sweeps back and forth. Keyboard: Tab to a slice, Enter opens, Esc closes.
  */
-export default function ElasticReel({ items, barWidth = 44, gap = 10, magnify = 2.4, lift = 1.15, influence = 200, radius = 12, height = 460 }: Props) {
+export default function ElasticReel({ items, barWidth = 44, gap = 10, magnify = 2.4, lift = 1.15, influence = 200, radius = 12, height = 460, onOpenChange }: Props) {
   const root = useRef<HTMLDivElement>(null);
   const bars = useRef<(HTMLButtonElement | null)[]>([]);
   const state = useRef({ px: null as number | null, hovering: false, open: -1, hoverIdx: -1 });
@@ -32,7 +33,7 @@ export default function ElasticReel({ items, barWidth = 44, gap = 10, magnify = 
   const [label, setLabel] = useState<number>(-1);
   const reduced = useRef(false);
 
-  const setOpenIdx = useCallback((i: number) => { state.current.open = i; setOpen(i); }, []);
+  const setOpenIdx = useCallback((i: number) => { state.current.open = i; setOpen(i); onOpenChange?.(i); }, [onOpenChange]);
 
   useEffect(() => {
     reduced.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

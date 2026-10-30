@@ -43,10 +43,21 @@ export default function LandingPage() {
   const [stats, setStats] = useState<Overall | null>(null);
   const [top, setTop] = useState<TopIssue[]>([]);
   const hero = useRef<HTMLDivElement>(null);
+  const [reelH, setReelH] = useState(640);
+  const [reelOpen, setReelOpen] = useState(false);
 
   useEffect(() => {
     fetch('/api/stats').then((r) => r.json()).then((d) => d.success && setStats(d.overall)).catch(() => {});
     fetch('/api/issues?status=open').then((r) => r.json()).then((d) => setTop((d.issues ?? []).slice(0, 5))).catch(() => {});
+  }, []);
+
+  // The hero is exactly one screen tall; the reel behind it fills it. No dot texture on this page.
+  useEffect(() => {
+    const size = () => setReelH(window.innerHeight - 72);
+    size();
+    window.addEventListener('resize', size);
+    document.documentElement.dataset.noDots = '1';
+    return () => { window.removeEventListener('resize', size); delete document.documentElement.dataset.noDots; };
   }, []);
 
   // The pinned headline fades out as the list slides up behind it.
@@ -74,7 +85,13 @@ export default function LandingPage() {
     <div className="flex flex-col w-full animate-fadeIn">
       {/* Hero: headline pinned in the middle, live list slides up behind it */}
       <section className="hero-smoke relative">
-        <div ref={hero} className="sticky top-[72px] z-30 h-[calc(100vh-72px)] flex flex-col items-center justify-center text-center px-4 pointer-events-none">
+        <div ref={hero} className="sticky top-[72px] z-30 h-[calc(100vh-72px)] overflow-hidden">
+          {/* Reel fills the hero; the veil keeps the headline readable. Pointer events pass through the text to the reel. */}
+          <div className="absolute inset-0 z-0">
+            <ElasticReel items={REEL} height={reelH} barWidth={86} gap={18} influence={280} magnify={2.3} radius={16} onOpenChange={(i) => setReelOpen(i >= 0)} />
+          </div>
+          <div className="hero-veil absolute inset-0 z-[1] pointer-events-none transition-opacity duration-500" style={{ opacity: reelOpen ? 0 : 1 }} />
+          <div className={`relative z-10 h-full flex flex-col items-center justify-center text-center px-4 pointer-events-none transition-opacity duration-500 ${reelOpen ? 'opacity-0' : 'opacity-100'}`}>
           <p className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100 text-indigo-800 text-sm font-medium mb-6">
             <MapPin className="w-4 h-4" /> {t('landing.v2.badge', { defaultValue: 'Civic issues, India-wide' })}
           </p>
@@ -96,6 +113,7 @@ export default function LandingPage() {
             </Link>
           </div>
           <p className="mt-10 text-sm text-gray-500 inline-flex items-center gap-2"><ArrowDown className="w-4 h-4 animate-bounce" /> See what is being fixed right now</p>
+          </div>
         </div>
 
         <div className="relative z-40 max-w-3xl mx-auto px-4 pb-24">
@@ -144,27 +162,6 @@ export default function LandingPage() {
           </div>
         </div>
       )}
-
-      {/* What people report */}
-      <section className="pt-20 pb-4">
-        <div className="max-w-6xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-gray-900 text-center">What people report</h2>
-          <p className="text-gray-600 mt-2 text-center">Every one of these gets a score, an owner and a deadline. Hover to explore, click a photo to open it.</p>
-          <div className="mt-8 hidden sm:block">
-            <ElasticReel items={REEL} barWidth={64} gap={14} />
-          </div>
-          {/* Narrow screens: a plain grid, the reel needs width to work */}
-          <div className="mt-8 grid grid-cols-2 gap-3 sm:hidden">
-            {REEL.map((r) => (
-              <figure key={r.src} className="relative overflow-hidden rounded-xl">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={r.src} alt={r.alt} loading="lazy" className="h-32 w-full object-cover" />
-                <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-2 py-1.5 text-xs font-medium text-white">{r.title}</figcaption>
-              </figure>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* The three main ideas */}
       <section className="py-20 bg-white">
