@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { MapPin, ArrowRight, ArrowDown, AlertTriangle, Users, Clock, CloudRain, Camera, ListOrdered, CheckCircle2, MessageSquare, Scale, HandHelping, Eye } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { WEIGHTS } from '@/lib/priority';
+import ElasticReel, { type ReelItem } from '@/components/home/ElasticReel';
 import { PriorityWhy } from '@/components/priority/PriorityBreakdown';
 import type { PriorityBand } from '@/types';
 
@@ -18,6 +19,17 @@ const FACTORS = [
   { icon: MapPin, name: 'Location sensitivity', max: WEIGHTS.location, line: 'Schools, hospitals and main roads count more.' },
   { icon: Clock, name: 'Time pressure', max: WEIGHTS.time, line: 'The longer it waits, the higher it climbs.' },
   { icon: CloudRain, name: 'Seasonal risk', max: WEIGHTS.season, line: 'Blocked drains matter more in monsoon.' },
+];
+
+const REEL: ReelItem[] = [
+  { src: '/reel/waterlogging.png', alt: 'A flooded road with cars and a scooter wading through water', title: 'Waterlogging', subtitle: 'Water & Sewerage' },
+  { src: '/reel/pothole.png', alt: 'A large water-filled pothole in the middle of a road', title: 'Potholes', subtitle: 'Roads & Infrastructure' },
+  { src: '/reel/wires.png', alt: 'A utility pole with a dangerous tangle of cables', title: 'Tangled wires', subtitle: 'Electrical & Street Lighting' },
+  { src: '/reel/garbage.png', alt: 'Garbage dumped at the foot of a wall', title: 'Garbage dumping', subtitle: 'Sanitation & Solid Waste' },
+  { src: '/reel/streetlight.png', alt: 'A damaged streetlight at dusk with loose cabling', title: 'Broken streetlights', subtitle: 'Electrical & Street Lighting' },
+  { src: '/reel/manhole.png', alt: 'An open manhole beside a footpath', title: 'Open manholes', subtitle: 'Water & Sewerage' },
+  { src: '/reel/river.png', alt: 'Toxic foam on a river below a bridge', title: 'River pollution', subtitle: 'Parks & Environment' },
+  { src: '/reel/smog.png', alt: 'A smoggy street with a landmark barely visible', title: 'Smog', subtitle: 'Parks & Environment' },
 ];
 
 const TRUST = [
@@ -132,6 +144,27 @@ export default function LandingPage() {
           </div>
         </div>
       )}
+
+      {/* What people report */}
+      <section className="pt-20 pb-4">
+        <div className="max-w-6xl mx-auto px-4">
+          <h2 className="text-3xl font-bold text-gray-900 text-center">What people report</h2>
+          <p className="text-gray-600 mt-2 text-center">Every one of these gets a score, an owner and a deadline. Hover to explore, click a photo to open it.</p>
+          <div className="mt-8 hidden sm:block">
+            <ElasticReel items={REEL} barWidth={64} gap={14} />
+          </div>
+          {/* Narrow screens: a plain grid, the reel needs width to work */}
+          <div className="mt-8 grid grid-cols-2 gap-3 sm:hidden">
+            {REEL.map((r) => (
+              <figure key={r.src} className="relative overflow-hidden rounded-xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={r.src} alt={r.alt} loading="lazy" className="h-32 w-full object-cover" />
+                <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-2 py-1.5 text-xs font-medium text-white">{r.title}</figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* The three main ideas */}
       <section className="py-20 bg-white">
