@@ -236,14 +236,14 @@ h1, h2, h3 {
 /* ---- Home page ---- */
 .hero-smoke {
   background:
-    radial-gradient(60% 45% at 18% 22%, rgba(14, 101, 119, .12), transparent 70%),
-    radial-gradient(55% 45% at 82% 68%, rgba(120, 140, 150, .20), transparent 70%),
+    radial-gradient(60% 45% at calc(18% + var(--px, 0) * 7%) calc(22% + var(--py, 0) * 9%), rgba(14, 101, 119, .12), transparent 70%),
+    radial-gradient(55% 45% at calc(82% + var(--px, 0) * -7%) calc(68% + var(--py, 0) * -9%), rgba(120, 140, 150, .20), transparent 70%),
     #f1f5f6;
 }
 .dark .hero-smoke {
   background:
-    radial-gradient(60% 45% at 18% 22%, rgba(60, 160, 180, .17), transparent 70%),
-    radial-gradient(55% 45% at 82% 68%, rgba(130, 165, 180, .13), transparent 70%),
+    radial-gradient(60% 45% at calc(18% + var(--px, 0) * 7%) calc(22% + var(--py, 0) * 9%), rgba(60, 160, 180, .17), transparent 70%),
+    radial-gradient(55% 45% at calc(82% + var(--px, 0) * -7%) calc(68% + var(--py, 0) * -9%), rgba(130, 165, 180, .13), transparent 70%),
     #14262e;
 }
 
@@ -295,12 +295,14 @@ html:not(.dark) .cursor-texture {
   display: block; position: fixed; inset: 0; z-index: 1499; pointer-events: none;
   background-image: radial-gradient(rgba(14, 101, 119, .13) 1px, transparent 1.4px);
   background-size: 22px 22px;
+  background-position: calc(var(--px, 0) * -24px) calc(var(--py, 0) * -24px);
 }
 /* Same dots, much stronger, but only in a circle around the cursor. */
 html:not(.dark) .cursor-texture::after {
   content: ''; position: absolute; inset: 0;
   background-image: radial-gradient(rgba(14, 101, 119, .85) 1.7px, transparent 2.1px);
   background-size: 22px 22px;
+  background-position: calc(var(--px, 0) * -24px) calc(var(--py, 0) * -24px);
   -webkit-mask-image: radial-gradient(320px circle at var(--mx, 50%) var(--my, -30%), #000, transparent 70%);
   mask-image: radial-gradient(320px circle at var(--mx, 50%) var(--my, -30%), #000, transparent 70%);
 }
@@ -308,8 +310,8 @@ html:not(.dark) .cursor-texture::after {
 html:not(.dark) .hero-smoke {
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .05 0 0 0 0 .3 0 0 0 0 .35 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-    radial-gradient(60% 45% at 18% 22%, rgba(14, 101, 119, .12), transparent 70%),
-    radial-gradient(55% 45% at 82% 68%, rgba(120, 140, 150, .20), transparent 70%);
+    radial-gradient(60% 45% at calc(18% + var(--px, 0) * 7%) calc(22% + var(--py, 0) * 9%), rgba(14, 101, 119, .12), transparent 70%),
+    radial-gradient(55% 45% at calc(82% + var(--px, 0) * -7%) calc(68% + var(--py, 0) * -9%), rgba(120, 140, 150, .20), transparent 70%);
 }
 html:not(.dark) .bg-white.rounded-xl:not(.glow-card), html:not(.dark) .bg-white.rounded-2xl:not(.glow-card) {
   background-image: radial-gradient(260px circle at var(--x, -200px) var(--y, -200px), rgba(14, 101, 119, .10), transparent 70%);
