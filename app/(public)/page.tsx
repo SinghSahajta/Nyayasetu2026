@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { MapPin, ArrowRight, AlertTriangle, Users, Clock, CloudRain, Camera, ListOrdered, CheckCircle2, MessageSquare } from 'lucide-react';
+import { MapPin, ArrowRight, ArrowDown, AlertTriangle, Users, Clock, CloudRain, Camera, ListOrdered, CheckCircle2, MessageSquare, Scale, HandHelping, Eye } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { WEIGHTS } from '@/lib/priority';
 import { PriorityWhy } from '@/components/priority/PriorityBreakdown';
@@ -11,57 +11,82 @@ import type { PriorityBand } from '@/types';
 interface Overall { total: number; open: number; resolved: number; overdue: number; on_time_rate: number | null; avg_resolution_hours: number | null }
 interface TopIssue { uid: string; title: string; city: string | null; priority_band: PriorityBand; priority_score: number; confirmations: number }
 
-// Generated from the real weights in lib/priority.ts, so this page can't drift from the scoring code.
+// Points come from the real weights in lib/priority.ts, so this page can't drift from the scoring code.
 const FACTORS = [
-  { icon: AlertTriangle, name: 'Severity', max: WEIGHTS.severity, how: 'AI reads the description and the photo and rates harm from 1 to 5, blended with a per-category baseline.' },
-  { icon: Users, name: 'Reports & confirmations', max: WEIGHTS.frequency, how: 'Similar reports within 150 m plus verified "I see this too" taps, on a log scale so spam cannot buy the top slot.' },
-  { icon: MapPin, name: 'Location sensitivity', max: WEIGHTS.location, how: 'Hospitals, schools, main roads, markets and bus stops within 250 m, from OpenStreetMap.' },
-  { icon: Clock, name: 'Time pressure', max: WEIGHTS.time, how: 'How much of the resolution deadline is used up. Overdue issues get the full points and are escalated.' },
-  { icon: CloudRain, name: 'Seasonal risk', max: WEIGHTS.season, how: 'Drains, sewers and mosquito breeding get extra weight during the monsoon.' },
+  { icon: AlertTriangle, name: 'How dangerous', max: WEIGHTS.severity, line: 'An open manhole outranks a faded sign.', bar: 'bg-red-500' },
+  { icon: Users, name: 'How many people report it', max: WEIGHTS.frequency, line: 'Verified reports push it up. Spam cannot.', bar: 'bg-indigo-500' },
+  { icon: MapPin, name: 'What is nearby', max: WEIGHTS.location, line: 'Schools, hospitals and main roads count more.', bar: 'bg-amber-500' },
+  { icon: Clock, name: 'How long it has waited', max: WEIGHTS.time, line: 'The longer it waits, the higher it climbs.', bar: 'bg-orange-500' },
+  { icon: CloudRain, name: 'Season', max: WEIGHTS.season, line: 'Blocked drains matter more in monsoon.', bar: 'bg-sky-500' },
+];
+
+const TRUST = [
+  { icon: Scale, title: 'Same rules for everyone', body: 'One formula scores every report in every ward.' },
+  { icon: HandHelping, title: 'No one can bump a score', body: 'Not officers, not supervisors, not us.' },
+  { icon: Eye, title: 'Every point has a reason', body: 'Tap the ⓘ next to any score to read why.' },
 ];
 
 export default function LandingPage() {
   const { t } = useTranslation();
   const [stats, setStats] = useState<Overall | null>(null);
   const [top, setTop] = useState<TopIssue[]>([]);
+  const hero = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetch('/api/stats').then((r) => r.json()).then((d) => d.success && setStats(d.overall)).catch(() => {});
     fetch('/api/issues?status=open').then((r) => r.json()).then((d) => setTop((d.issues ?? []).slice(0, 5))).catch(() => {});
   }, []);
 
+  // The pinned headline fades out as the list slides up behind it.
+  useEffect(() => {
+    const onScroll = () => {
+      if (hero.current) hero.current.style.opacity = String(Math.max(0, 1 - window.scrollY / (window.innerHeight * 0.5)));
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const ticker = stats && [
+    { label: 'Issues reported', value: stats.total },
+    { label: 'Resolved', value: stats.resolved },
+    { label: 'Still open', value: stats.open },
+    { label: 'Resolved on time', value: stats.on_time_rate == null ? '–' : `${stats.on_time_rate}%` },
+    { label: 'Avg. time to fix', value: stats.avg_resolution_hours == null ? '–' : `${stats.avg_resolution_hours} h` },
+  ];
+
   return (
     <div className="flex flex-col w-full animate-fadeIn">
-      {/* Hero */}
-      <section className="bg-gradient-to-b from-indigo-50 to-white">
-        <div className="max-w-6xl mx-auto px-4 pt-20 pb-16 grid lg:grid-cols-2 gap-12 items-center [&>*]:min-w-0">
-          <div>
-            <p className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100 text-indigo-800 text-sm font-medium mb-6">
-              <MapPin className="w-4 h-4" /> {t('landing.v2.badge', { defaultValue: 'Civic issues, India-wide' })}
-            </p>
-            <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 tracking-tight leading-tight">
-              {t('landing.v2.headline', { defaultValue: 'Report it. See how urgent it is. Watch it get fixed.' })}
-            </h1>
-            <p className="text-lg text-gray-600 mt-6 max-w-xl">
-              {t('landing.v2.sub', { defaultValue: 'Pin a pothole, garbage dump or dead streetlight on the map. NyayaSetu scores its priority automatically, explains every point, and shows everyone its progress until it is resolved.' })}
-            </p>
-            <div className="flex flex-wrap gap-3 mt-8">
-              <Link href="/complaints/file" className="inline-flex items-center gap-2 px-6 py-3 rounded-md bg-indigo-700 text-white font-semibold hover:bg-indigo-800">
-                {t('landing.v2.report', { defaultValue: 'Report an issue' })} <ArrowRight className="w-4 h-4" />
-              </Link>
-              <Link href="/issues" className="inline-flex items-center gap-2 px-6 py-3 rounded-md border border-slate-300 bg-white text-slate-800 font-semibold hover:bg-slate-50">
-                {t('landing.v2.map', { defaultValue: 'See the live map' })}
-              </Link>
-              <Link href="/chat" className="inline-flex items-center gap-2 px-6 py-3 rounded-md text-indigo-800 font-semibold hover:bg-indigo-50">
-                <MessageSquare className="w-4 h-4" /> {t('landing.v2.chat', { defaultValue: 'Report by chat (Hindi / English)' })}
-              </Link>
-            </div>
+      {/* Hero: headline pinned in the middle, live list slides up behind it */}
+      <section className="hero-smoke relative">
+        <div ref={hero} className="sticky top-[72px] z-30 h-[calc(100vh-72px)] flex flex-col items-center justify-center text-center px-4 pointer-events-none">
+          <p className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100 text-indigo-800 text-sm font-medium mb-6">
+            <MapPin className="w-4 h-4" /> {t('landing.v2.badge', { defaultValue: 'Civic issues, India-wide' })}
+          </p>
+          <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 tracking-tight leading-[1.08] max-w-4xl">
+            {t('landing.v2.headline', { defaultValue: 'Report it. See how urgent it is. Watch it get fixed.' })}
+          </h1>
+          <p className="text-lg text-gray-600 mt-6 max-w-2xl">
+            {t('landing.v2.sub', { defaultValue: 'Pin a pothole, garbage dump or dead streetlight on the map. We score its priority, explain every point, and show everyone its progress until it is resolved.' })}
+          </p>
+          <div className="flex flex-wrap justify-center gap-3 mt-8 pointer-events-auto">
+            <Link href="/complaints/file" className="inline-flex items-center gap-2 px-6 py-3 rounded-md bg-indigo-700 text-white font-semibold hover:bg-indigo-800">
+              {t('landing.v2.report', { defaultValue: 'Report an issue' })} <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link href="/issues" className="inline-flex items-center gap-2 px-6 py-3 rounded-md border border-slate-300 bg-white text-slate-800 font-semibold hover:bg-slate-50">
+              {t('landing.v2.map', { defaultValue: 'See the live map' })}
+            </Link>
+            <Link href="/chat" className="inline-flex items-center gap-2 px-6 py-3 rounded-md text-indigo-800 font-semibold hover:bg-indigo-50">
+              <MessageSquare className="w-4 h-4" /> {t('landing.v2.chat', { defaultValue: 'Report by chat (Hindi / English)' })}
+            </Link>
           </div>
+          <p className="mt-10 text-sm text-gray-500 inline-flex items-center gap-2"><ArrowDown className="w-4 h-4 animate-bounce" /> See what is being fixed right now</p>
+        </div>
 
-          {/* Live top priorities */}
+        <div className="relative z-20 max-w-3xl mx-auto px-4 pb-24">
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm font-semibold text-gray-900">{t('landing.v2.topNow', { defaultValue: 'Highest priority right now' })}</h2>
+              <h2 className="text-base font-semibold text-gray-900">{t('landing.v2.topNow', { defaultValue: 'Highest priority right now' })}</h2>
               <Link href="/issues" className="text-xs text-indigo-700 font-medium hover:underline">View all →</Link>
             </div>
             {top.length === 0 ? (
@@ -84,54 +109,79 @@ export default function LandingPage() {
             )}
           </div>
         </div>
+      </section>
 
-        {/* Live numbers */}
-        {stats && (
-          <div className="max-w-6xl mx-auto px-4 pb-14 grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { label: 'Issues reported', value: stats.total },
-              { label: 'Resolved', value: stats.resolved },
-              { label: 'Resolved on time', value: stats.on_time_rate == null ? '–' : `${stats.on_time_rate}%` },
-              { label: 'Avg. time to fix', value: stats.avg_resolution_hours == null ? '–' : `${stats.avg_resolution_hours} h` },
-            ].map((s) => (
-              <div key={s.label} className="bg-white rounded-xl border border-slate-200 p-4">
-                <p className="text-xs text-gray-500">{s.label}</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">{s.value}</p>
+      {/* Live numbers as a running stripe */}
+      {ticker && (
+        <div className="stat-stripe overflow-hidden border-y border-indigo-900/20 bg-indigo-800 text-white" aria-label="Live numbers">
+          <div className="animate-marquee flex w-max">
+            {[0, 1].map((copy) => (
+              <div key={copy} className="flex shrink-0" aria-hidden={copy === 1}>
+                {ticker.map((s) => (
+                  <div key={s.label} className="flex items-baseline gap-3 px-10 py-4 whitespace-nowrap">
+                    <span className="text-3xl font-bold tabular-nums">{s.value}</span>
+                    <span className="text-sm uppercase tracking-wider text-indigo-100">{s.label}</span>
+                    <span className="ml-10 text-amber-400" aria-hidden>◆</span>
+                  </div>
+                ))}
               </div>
             ))}
           </div>
-        )}
-      </section>
+        </div>
+      )}
 
-      {/* How it works */}
-      <section className="py-16 bg-white">
-        <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-6">
+      {/* The three main ideas */}
+      <section className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-8">
           {[
-            { icon: Camera, title: 'Pin & snap', body: 'Drop a pin (or use GPS), add a photo. Similar open reports nearby are shown so you can confirm instead of duplicating.' },
-            { icon: ListOrdered, title: 'Scored automatically', body: 'A 0–100 priority with a reason for every point. Officers work their queue from the top, not first-come-first-served.' },
-            { icon: CheckCircle2, title: 'Tracked in public', body: 'Reported → assigned → work started → resolved, with deadlines, auto-escalation and before/after photos for anyone to check.' },
+            { icon: Camera, title: 'Pin & snap', body: 'Drop a pin, add a photo. Already reported nearby? Confirm it instead of duplicating.' },
+            { icon: ListOrdered, title: 'Scored automatically', body: 'A 0–100 priority with a reason for every point. Officers work from the top of the list.' },
+            { icon: CheckCircle2, title: 'Tracked in public', body: 'Deadlines, auto-escalation and before/after photos that anyone can check.' },
           ].map((s) => (
-            <div key={s.title} className="p-6 rounded-xl border border-slate-200">
-              <s.icon className="w-6 h-6 text-indigo-700" />
-              <h3 className="text-lg font-semibold text-gray-900 mt-3">{s.title}</h3>
-              <p className="text-sm text-gray-600 mt-2">{s.body}</p>
+            <div key={s.title} className="glow-card bg-white rounded-2xl border p-8">
+              <span className="inline-flex h-14 w-14 items-center justify-center rounded-xl bg-indigo-100 text-indigo-700"><s.icon className="w-7 h-7" /></span>
+              <h3 className="text-2xl font-semibold text-gray-900 mt-5">{s.title}</h3>
+              <p className="text-gray-600 mt-3">{s.body}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Scoring explained */}
-      <section className="py-16 bg-gray-50 border-t border-slate-200">
-        <div className="max-w-6xl mx-auto px-4">
-          <h2 className="text-2xl font-bold text-gray-900">How the priority score works</h2>
-          <p className="text-gray-600 mt-2 max-w-3xl">Transparent by design: five factors, fixed weights, a written reason for each one. Bands: P1 Critical ≥ 70, P2 High ≥ 50, P3 Medium ≥ 30, P4 Low.</p>
-          <div className="mt-8 grid md:grid-cols-5 gap-4">
+      {/* Scoring, in plain words */}
+      <section className="py-20 bg-gray-50 border-t border-slate-200">
+        <div className="max-w-5xl mx-auto px-4">
+          <h2 className="text-3xl font-bold text-gray-900">Who gets fixed first? Here is exactly how we decide.</h2>
+          <p className="text-gray-600 mt-3">Every report is scored out of 100 using five things. Nothing else.</p>
+
+          <div className="mt-8 flex h-4 rounded-full overflow-hidden gap-0.5" role="img" aria-label="How the 100 points are split">
+            {FACTORS.map((f) => <div key={f.name} className={f.bar} style={{ width: `${f.max}%` }} title={`${f.name}: up to ${f.max}`} />)}
+          </div>
+
+          <ul className="mt-6 grid md:grid-cols-5 gap-4">
             {FACTORS.map((f) => (
-              <div key={f.name} className="bg-white rounded-xl border border-slate-200 p-5">
-                <f.icon className="w-5 h-5 text-indigo-700" />
-                <p className="mt-3 font-semibold text-gray-900">{f.name}</p>
-                <p className="text-sm text-indigo-800 font-medium">up to {f.max} pts</p>
-                <p className="text-xs text-gray-600 mt-2">{f.how}</p>
+              <li key={f.name} className="bg-white rounded-xl border border-slate-200 p-4">
+                <span className="flex items-center gap-2">
+                  <span className={`h-2.5 w-2.5 rounded-full ${f.bar}`} aria-hidden />
+                  <span className="text-xs font-semibold text-gray-500">UP TO {f.max}</span>
+                </span>
+                <p className="mt-2 font-semibold text-gray-900 leading-snug">{f.name}</p>
+                <p className="text-sm text-gray-600 mt-1">{f.line}</p>
+              </li>
+            ))}
+          </ul>
+
+          <p className="mt-6 text-sm text-gray-600">
+            <span className="font-semibold text-gray-900">70+ Critical</span> · 50+ High · 30+ Medium · below that Low
+          </p>
+
+          <div className="mt-10 grid md:grid-cols-3 gap-4">
+            {TRUST.map((x) => (
+              <div key={x.title} className="flex gap-3 rounded-xl bg-white border border-slate-200 p-4">
+                <x.icon className="w-6 h-6 text-indigo-700 shrink-0" />
+                <div>
+                  <p className="font-semibold text-gray-900">{x.title}</p>
+                  <p className="text-sm text-gray-600">{x.body}</p>
+                </div>
               </div>
             ))}
           </div>

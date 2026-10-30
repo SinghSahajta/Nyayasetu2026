@@ -232,3 +232,42 @@ h1, h2, h3 {
   border-color: rgba(var(--glow), .55);
   box-shadow: 0 0 0 1px rgba(var(--glow), .25), 0 0 28px -4px rgba(var(--glow), .4), inset 0 1px 0 rgba(255, 255, 255, .06);
 }
+
+/* ---- Home page ---- */
+.hero-smoke {
+  background:
+    radial-gradient(60% 45% at 18% 22%, rgba(14, 101, 119, .12), transparent 70%),
+    radial-gradient(55% 45% at 82% 68%, rgba(120, 140, 150, .20), transparent 70%),
+    #f1f5f6;
+}
+.dark .hero-smoke {
+  background:
+    radial-gradient(60% 45% at 18% 22%, rgba(60, 160, 180, .17), transparent 70%),
+    radial-gradient(55% 45% at 82% 68%, rgba(130, 165, 180, .13), transparent 70%),
+    #14262e;
+}
+
+.animate-marquee { animation: marquee 36s linear infinite; }
+.stat-stripe:hover .animate-marquee { animation-play-state: paused; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .animate-marquee { animation: none; } }
+
+/* The three main ideas: more glow than ordinary cards, lifts on hover. */
+.glow-card {
+  border-color: rgba(14, 101, 119, .25);
+  box-shadow: 0 12px 40px -14px rgba(14, 101, 119, .45);
+  transition: transform .25s, box-shadow .25s, border-color .25s;
+}
+.glow-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(14, 101, 119, .6);
+  box-shadow: 0 22px 56px -14px rgba(14, 101, 119, .6);
+}
+.dark .bg-white.glow-card {
+  border-color: rgba(var(--glow), .4);
+  box-shadow: 0 0 0 1px rgba(var(--glow), .12), 0 0 36px -6px rgba(var(--glow), .35), inset 0 1px 0 rgba(255, 255, 255, .06);
+}
+.dark .bg-white.glow-card:hover {
+  border-color: rgba(var(--glow), .85);
+  box-shadow: 0 0 0 1px rgba(var(--glow), .45), 0 0 56px -4px rgba(var(--glow), .6), inset 0 1px 0 rgba(255, 255, 255, .08);
+}
