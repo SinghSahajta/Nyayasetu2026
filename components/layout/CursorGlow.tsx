@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 
 const CARD = '.bg-white.rounded-xl, .bg-white.rounded-2xl';
 
-/** Dark-mode only (CSS hides the layer in light): a soft light follows the pointer, and the card under it gets a spotlight. */
+/** A soft halo follows the pointer (light in dark mode, smoke in light mode), and the card under it gets a spotlight. */
 export default function CursorGlow() {
   useEffect(() => {
     if (!window.matchMedia('(hover: hover)').matches) return;
@@ -14,7 +14,7 @@ export default function CursorGlow() {
 
     const clear = () => { card?.style.removeProperty('--x'); card?.style.removeProperty('--y'); };
     const onMove = (e: PointerEvent) => {
-      if (frame || !root.classList.contains('dark')) return;
+      if (frame) return;
       frame = requestAnimationFrame(() => {
         frame = 0;
         root.style.setProperty('--mx', `${e.clientX}px`);
@@ -32,5 +32,10 @@ export default function CursorGlow() {
     return () => { window.removeEventListener('pointermove', onMove); cancelAnimationFrame(frame); };
   }, []);
 
-  return <div className="cursor-glow" aria-hidden />;
+  return (
+    <>
+      <div className="cursor-glow" aria-hidden />
+      <div className="cursor-texture" aria-hidden />
+    </>
+  );
 }
