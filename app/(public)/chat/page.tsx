@@ -34,11 +34,13 @@ export default function ChatPage() {
   const [streaming, setStreaming] = useState(false);
   const { language, toggleLanguage } = useLanguage();
   const { t } = useTranslation();
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollBox = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Scroll the chat box itself (not the page), and only once there is something to follow.
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const box = scrollBox.current;
+    if (messages.length && box) box.scrollTo({ top: box.scrollHeight, behavior: 'smooth' });
   }, [messages]);
 
   const sendMessage = useCallback(async (text: string) => {
@@ -160,7 +162,7 @@ export default function ChatPage() {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-6">
+      <div ref={scrollBox} className="flex-1 overflow-y-auto px-4 py-6">
         <div className="max-w-2xl mx-auto space-y-4">
           {messages.length === 0 ? (
             /* Starter state */
@@ -239,7 +241,6 @@ export default function ChatPage() {
               </div>
             ))
           )}
-          <div ref={messagesEndRef} />
         </div>
       </div>
 
