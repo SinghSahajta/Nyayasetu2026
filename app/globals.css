@@ -44,36 +44,36 @@ h1, h2, h3 {
 /* ---- Dark mode ----
    Components use hardcoded light Tailwind colours, so dark mode remaps them here
    instead of adding dark: variants to every file. Toggled by .dark on <html>. */
-.dark { color-scheme: dark; --background: #0f172a; --foreground: #e2e8f0; }
+.dark { color-scheme: dark; --background: #121916; --foreground: #e3ebe6; }
 .dark body { background: var(--background); color: var(--foreground); }
-.dark .bg-white,.dark .hover\:bg-white:hover{background-color:#111827}
-.dark .bg-gray-50,.dark .hover\:bg-gray-50:hover{background-color:#0f172a}
-.dark .bg-slate-50,.dark .hover\:bg-slate-50:hover{background-color:#0f172a}
-.dark .bg-gray-100,.dark .hover\:bg-gray-100:hover{background-color:#1e293b}
-.dark .bg-slate-100,.dark .hover\:bg-slate-100:hover{background-color:#1e293b}
-.dark .bg-gray-200,.dark .hover\:bg-gray-200:hover{background-color:#334155}
-.dark .text-gray-900,.dark .hover\:text-gray-900:hover,.dark .group:hover .group-hover\:text-gray-900{color:#f1f5f9}
-.dark .text-gray-800,.dark .hover\:text-gray-800:hover,.dark .group:hover .group-hover\:text-gray-800{color:#e2e8f0}
-.dark .text-gray-700,.dark .hover\:text-gray-700:hover,.dark .group:hover .group-hover\:text-gray-700{color:#cbd5e1}
-.dark .text-gray-600,.dark .hover\:text-gray-600:hover,.dark .group:hover .group-hover\:text-gray-600{color:#94a3b8}
-.dark .text-gray-500,.dark .hover\:text-gray-500:hover,.dark .group:hover .group-hover\:text-gray-500{color:#94a3b8}
-.dark .text-gray-400,.dark .hover\:text-gray-400:hover,.dark .group:hover .group-hover\:text-gray-400{color:#8396ad}
-.dark .text-gray-300,.dark .hover\:text-gray-300:hover,.dark .group:hover .group-hover\:text-gray-300{color:#64748b}
-.dark .text-slate-900,.dark .hover\:text-slate-900:hover,.dark .group:hover .group-hover\:text-slate-900{color:#f1f5f9}
-.dark .text-slate-800,.dark .hover\:text-slate-800:hover,.dark .group:hover .group-hover\:text-slate-800{color:#e2e8f0}
-.dark .text-slate-700,.dark .hover\:text-slate-700:hover,.dark .group:hover .group-hover\:text-slate-700{color:#cbd5e1}
-.dark .text-slate-600,.dark .hover\:text-slate-600:hover,.dark .group:hover .group-hover\:text-slate-600{color:#94a3b8}
-.dark .text-slate-500,.dark .hover\:text-slate-500:hover,.dark .group:hover .group-hover\:text-slate-500{color:#94a3b8}
-.dark .text-slate-400,.dark .hover\:text-slate-400:hover,.dark .group:hover .group-hover\:text-slate-400{color:#8396ad}
-.dark .border-gray-50{border-color:#1e293b}
-.dark .border-gray-100{border-color:#1e293b}
-.dark .border-gray-200{border-color:#334155}
-.dark .border-gray-300{border-color:#475569}
-.dark .border-slate-200{border-color:#334155}
-.dark .border-slate-300{border-color:#475569}
-.dark .divide-gray-100>:not([hidden])~:not([hidden]){border-color:#1e293b}
-.dark input,.dark textarea,.dark select{background-color:#0f172a;color:#e2e8f0;border-color:#475569}
-.dark input::placeholder,.dark textarea::placeholder,.dark .placeholder-gray-400::placeholder{color:#64748b}
+.dark .bg-white,.dark .hover\:bg-white:hover{background-color:#1a221f}
+.dark .bg-gray-50,.dark .hover\:bg-gray-50:hover{background-color:#121916}
+.dark .bg-slate-50,.dark .hover\:bg-slate-50:hover{background-color:#121916}
+.dark .bg-gray-100,.dark .hover\:bg-gray-100:hover{background-color:#232d29}
+.dark .bg-slate-100,.dark .hover\:bg-slate-100:hover{background-color:#232d29}
+.dark .bg-gray-200,.dark .hover\:bg-gray-200:hover{background-color:#313e38}
+.dark .text-gray-900,.dark .hover\:text-gray-900:hover,.dark .group:hover .group-hover\:text-gray-900{color:#f1f6f3}
+.dark .text-gray-800,.dark .hover\:text-gray-800:hover,.dark .group:hover .group-hover\:text-gray-800{color:#e3ebe6}
+.dark .text-gray-700,.dark .hover\:text-gray-700:hover,.dark .group:hover .group-hover\:text-gray-700{color:#c6d2cb}
+.dark .text-gray-600,.dark .hover\:text-gray-600:hover,.dark .group:hover .group-hover\:text-gray-600{color:#a3b3aa}
+.dark .text-gray-500,.dark .hover\:text-gray-500:hover,.dark .group:hover .group-hover\:text-gray-500{color:#a3b3aa}
+.dark .text-gray-400,.dark .hover\:text-gray-400:hover,.dark .group:hover .group-hover\:text-gray-400{color:#8a9b92}
+.dark .text-gray-300,.dark .hover\:text-gray-300:hover,.dark .group:hover .group-hover\:text-gray-300{color:#6a7a72}
+.dark .text-slate-900,.dark .hover\:text-slate-900:hover,.dark .group:hover .group-hover\:text-slate-900{color:#f1f6f3}
+.dark .text-slate-800,.dark .hover\:text-slate-800:hover,.dark .group:hover .group-hover\:text-slate-800{color:#e3ebe6}
+.dark .text-slate-700,.dark .hover\:text-slate-700:hover,.dark .group:hover .group-hover\:text-slate-700{color:#c6d2cb}
+.dark .text-slate-600,.dark .hover\:text-slate-600:hover,.dark .group:hover .group-hover\:text-slate-600{color:#a3b3aa}
+.dark .text-slate-500,.dark .hover\:text-slate-500:hover,.dark .group:hover .group-hover\:text-slate-500{color:#a3b3aa}
+.dark .text-slate-400,.dark .hover\:text-slate-400:hover,.dark .group:hover .group-hover\:text-slate-400{color:#8a9b92}
+.dark .border-gray-50{border-color:#232d29}
+.dark .border-gray-100{border-color:#232d29}
+.dark .border-gray-200{border-color:#313e38}
+.dark .border-gray-300{border-color:#3f4e47}
+.dark .border-slate-200{border-color:#313e38}
+.dark .border-slate-300{border-color:#3f4e47}
+.dark .divide-gray-100>:not([hidden])~:not([hidden]){border-color:#232d29}
+.dark input,.dark textarea,.dark select{background-color:#121916;color:#e3ebe6;border-color:#3f4e47}
+.dark input::placeholder,.dark textarea::placeholder,.dark .placeholder-gray-400::placeholder{color:#6a7a72}
 .dark .bg-red-50,.dark .hover\:bg-red-50:hover{background-color:rgba(239,68,68,0.12)}
 .dark .bg-red-100,.dark .hover\:bg-red-100:hover{background-color:rgba(239,68,68,0.2)}
 .dark .bg-red-200,.dark .hover\:bg-red-200:hover{background-color:rgba(239,68,68,0.3)}
@@ -206,7 +206,29 @@ h1, h2, h3 {
 .dark .border-lime-100{border-color:rgba(132,204,22,.4)}
 .dark .border-lime-200{border-color:rgba(132,204,22,.4)}
 .dark .border-lime-300{border-color:rgba(132,204,22,.4)}
-.dark .from-indigo-50,.dark .from-slate-50{--tw-gradient-from:#0f172a var(--tw-gradient-from-position);--tw-gradient-to:rgb(15 23 42 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}
-.dark .to-indigo-50,.dark .to-white{--tw-gradient-to:#111827 var(--tw-gradient-to-position)}
+.dark .from-indigo-50,.dark .from-slate-50{--tw-gradient-from:#121916 var(--tw-gradient-from-position);--tw-gradient-to:rgb(18 25 22 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}
+.dark .to-indigo-50,.dark .to-white{--tw-gradient-to:#1a221f var(--tw-gradient-to-position)}
 .dark .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) saturate(.55) brightness(.9) contrast(.9)}
-.dark .leaflet-container{background:#1f2937}
+.dark .leaflet-container{background:#1b2320}
+
+/* ---- Dark mode: cursor glow, glowing card borders, a pinch of glass (dark only) ---- */
+.dark { --glow: 45, 190, 180; }
+.cursor-glow { display: none; }
+.dark .cursor-glow {
+  display: block; position: fixed; inset: 0; z-index: 1500; pointer-events: none; mix-blend-mode: screen;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, -30%), rgba(var(--glow), .10), transparent 65%);
+}
+.dark .bg-white.rounded-xl, .dark .bg-white.rounded-2xl {
+  background-color: rgba(26, 34, 31, .78);
+  background-image:
+    radial-gradient(260px circle at var(--x, -200px) var(--y, -200px), rgba(var(--glow), .16), transparent 70%),
+    linear-gradient(145deg, rgba(255, 255, 255, .045), rgba(255, 255, 255, .01));
+  backdrop-filter: blur(10px);
+  border-color: rgba(var(--glow), .22);
+  box-shadow: 0 0 0 1px rgba(var(--glow), .05), 0 6px 24px -10px rgba(var(--glow), .25), inset 0 1px 0 rgba(255, 255, 255, .05);
+  transition: box-shadow .25s, border-color .25s;
+}
+.dark .bg-white.rounded-xl:hover, .dark .bg-white.rounded-2xl:hover {
+  border-color: rgba(var(--glow), .55);
+  box-shadow: 0 0 0 1px rgba(var(--glow), .25), 0 0 28px -4px rgba(var(--glow), .4), inset 0 1px 0 rgba(255, 255, 255, .06);
+}

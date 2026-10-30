@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { Alice, Montserrat } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/components/layout/LanguageProvider";
+import CursorGlow from "@/components/layout/CursorGlow";
 import ThemeToggle from "@/components/layout/ThemeToggle";
 
 const geistSans = localFont({
@@ -39,6 +40,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${body.variable} ${heading.variable} antialiased`}
       >
         <ThemeToggle />
+        <CursorGlow />
         <LanguageProvider>
           {children}
         </LanguageProvider>
