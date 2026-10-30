@@ -15,6 +15,8 @@ import {
   LineChart, Line,
 } from 'recharts';
 import type { DashboardMetrics, OfficerPerformance } from '@/types';
+import { useTranslation } from 'react-i18next';
+import WardHeatmap from '@/components/dashboard/WardHeatmap';
 import PriorityHotspots from '@/components/dashboard/PriorityHotspots';
 
 const TOKEN_KEY = 'nyayasetu_token';
@@ -43,6 +45,7 @@ interface OverdueComplaint {
 }
 
 export default function SupervisorDashboardPage() {
+  const { t } = useTranslation();
   const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
   const [officers, setOfficers] = useState<OfficerPerformance[]>([]);
   const [overdue, setOverdue] = useState<OverdueComplaint[]>([]);
@@ -164,6 +167,17 @@ export default function SupervisorDashboardPage() {
         <h2 className="text-xl font-semibold text-slate-900 mb-1">Priority hotspots</h2>
         <p className="text-sm text-slate-500 mb-6">Open issues across all areas. Bigger, redder pins have higher priority scores.</p>
         <PriorityHotspots />
+      </div>
+
+      {/* Section 2.6 — Ward heatmap */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 mb-8">
+        <h2 className="text-xl font-semibold text-slate-900 mb-1">
+          {t('supervisor.heatmap.title', { defaultValue: 'Ward Complaint Heatmap' })}
+        </h2>
+        <p className="text-sm text-slate-500 mb-6">
+          {t('supervisor.heatmap.description', { defaultValue: 'Color intensity indicates complaint volume per ward. Red = high volume, Green = low.' })}
+        </p>
+        <WardHeatmap wards={(metrics.ward_hotspots ?? []).map((w) => ({ ward: w.ward, total_complaints: w.count }))} />
       </div>
 
       {/* Section 3 — Overdue Complaints */}

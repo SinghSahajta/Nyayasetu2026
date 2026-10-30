@@ -36,6 +36,9 @@ export default function Footer() {
                 <Link href="/about" className="text-sm text-gray-400 hover:text-white transition-colors">{t('footer.aboutUs')}</Link>
               </li>
               <li>
+                <Link href="/schemes" className="text-sm text-gray-400 hover:text-white transition-colors">{t('landing.exploreSchemes')}</Link>
+              </li>
+              <li>
                 <Link href="/chat" className="text-sm text-gray-400 hover:text-white transition-colors">{t('nav.chatAssistant')}</Link>
               </li>
             </ul>

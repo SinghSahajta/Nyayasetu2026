@@ -1,0 +1,32 @@
+-- Scheme discovery (ported from the first NyayaSetu prototype). Additive: touches no existing table.
+create table if not exists schemes (
+  id uuid primary key default gen_random_uuid(),
+  title_en text not null unique,
+  title_hi text not null default '',
+  short_description_en text not null default '',
+  short_description_hi text not null default '',
+  description_en text not null default '',
+  description_hi text not null default '',
+  eligibility_en text not null default '',
+  eligibility_hi text not null default '',
+  benefits_en text not null default '',
+  benefits_hi text not null default '',
+  apply_url text,
+  application_link text,
+  department text not null default '',
+  category text not null default 'general',
+  target_groups text[] not null default '{}',
+  tags text[] not null default '{}',
+  required_documents text[] not null default '{}',
+  min_age int,
+  max_age int,
+  gender text,
+  occupation text,
+  social_category text,
+  has_disability boolean not null default false,
+  max_income int,
+  deadline date,
+  is_active boolean not null default true,
+  created_at timestamptz not null default now()
+);
+alter table schemes enable row level security;

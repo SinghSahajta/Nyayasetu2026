@@ -8,7 +8,8 @@
     "officerLogin": "Officer / Supervisor Login",
     "logout": "Logout",
     "issueMap": "Issue Map",
-    "stats": "Transparency"
+    "stats": "Transparency",
+    "schemes": "Schemes"
   },
   "landing": {
     "badge": "AI-Powered Civic Platform",
@@ -223,5 +224,35 @@
       },
       "overdue": "Overdue"
     }
+  },
+  "schemes": {
+    "title": "Government Schemes",
+    "subtitle": "Discover and apply for welfare schemes in Delhi",
+    "searchPlaceholder": "Search schemes...",
+    "btnDiscover": "Discover For Me",
+    "btnAll": "All Schemes",
+    "btnApply": "Apply Now",
+    "btnDetails": "View Details",
+    "minAge": "Min Age",
+    "years": "years",
+    "noSchemes": "No schemes found matching your criteria.",
+    "recommendTitle": "Get Personalized Recommendations",
+    "recommendSub": "Tell us about yourself to find schemes you qualify for.",
+    "ageGroup": "Age Group",
+    "gender": "Gender",
+    "occupation": "Occupation",
+    "socialCategory": "Social Category",
+    "hasDisability": "Do you have any disability?",
+    "yes": "Yes",
+    "no": "No",
+    "btnFind": "Find Schemes",
+    "finding": "Finding schemes...",
+    "selectOption": "Select an option",
+    "details": "Scheme Details",
+    "eligibility": "Eligibility Criteria",
+    "benefits": "Benefits",
+    "howToApply": "How to Apply",
+    "documents": "Required Documents",
+    "back": "Back to Schemes"
   }
 }

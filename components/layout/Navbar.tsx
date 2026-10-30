@@ -24,6 +24,7 @@ export default function Navbar() {
 
   const navLinks = [
     { name: t('nav.home'), href: '/' },
+    { name: t('nav.schemes'), href: '/schemes' },
     { name: t('nav.issueMap'), href: '/issues' },
     { name: t('nav.fileComplaint'), href: '/complaints/file' },
     { name: t('nav.chatAssistant'), href: '/chat' },
