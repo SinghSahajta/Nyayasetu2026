@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin, PUBLIC_COMPLAINT_COLUMNS } from '@/lib/db';
+import { blurLocation } from '@/lib/privacy';
 
 type TrackedRow = Record<string, unknown> & { id: string; department_id: string | null; assigned_officer_id: string | null };
 
@@ -28,7 +29,7 @@ export async function GET(_request: NextRequest, { params }: { params: { uid: st
 
     return NextResponse.json({
       success: true,
-      complaint: publicComplaint,
+      complaint: blurLocation(publicComplaint),
       updates: updates ?? [],
       department_name: dept?.data?.name ?? null,
       officer_name: officer?.data?.full_name ?? null,

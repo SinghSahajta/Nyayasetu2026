@@ -386,6 +386,9 @@ export default function FileComplaintPage() {
               <p className="text-xs text-gray-500 mt-1">
                 {location ? `Pinned at ${location.lat.toFixed(5)}, ${location.lng.toFixed(5)}. Drag the pin to adjust.` : 'Tap the map or use your location. Anywhere in India.'}
               </p>
+              <p className="text-xs text-indigo-700 bg-indigo-50 border border-indigo-100 rounded-md px-2.5 py-1.5 mt-2">
+                Your privacy: the public map shows only an approximate spot (about 200 m) and hides house numbers. Your name and phone are never shown. Only the assigned officer sees the exact pin. Please don&apos;t put personal details in the description.
+              </p>
               {(formErrors.location || locError) && <p className="text-xs text-red-600 mt-1">{formErrors.location || locError}</p>}
               {nearby.length > 0 && (
                 <div className="mt-3 p-3 rounded-lg bg-amber-50 border border-amber-200 text-sm">

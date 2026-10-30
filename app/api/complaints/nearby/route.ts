@@ -10,5 +10,7 @@ export async function GET(request: NextRequest) {
   if (!Number.isFinite(lat) || !Number.isFinite(lng) || !category) {
     return NextResponse.json({ success: false, message: 'lat, lng and category are required.' }, { status: 400 });
   }
-  return NextResponse.json({ success: true, issues: await findNearby(lat, lng, category) });
+  // Distances are rounded to 50 m: exact values from a few probe points would reveal a reporter's spot.
+  const issues = (await findNearby(lat, lng, category)).map((i) => ({ ...i, distance_m: Math.round(i.distance_m / 50) * 50 }));
+  return NextResponse.json({ success: true, issues });
 }

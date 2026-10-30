@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/db';
+import { blurCoord } from '@/lib/privacy';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,5 +22,5 @@ export async function GET(request: NextRequest) {
   if (city) q = q.ilike('city', city);
   const { data, error } = await q;
   if (error) return NextResponse.json({ success: false, message: 'Failed to load issues.' }, { status: 500 });
-  return NextResponse.json({ success: true, issues: data });
+  return NextResponse.json({ success: true, issues: data.map((i) => ({ ...i, latitude: blurCoord(i.latitude), longitude: blurCoord(i.longitude) })) });
 }

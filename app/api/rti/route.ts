@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin, PUBLIC_COMPLAINT_COLUMNS } from '@/lib/db';
 import { groq, CHAT_MODEL } from '@/lib/llm';
+import { blurLocation } from '@/lib/privacy';
 
 // Drafts an RTI application (Section 6(1), RTI Act 2005) about one public issue.
 // Uses only public fields. Falls back to a fixed template when there is no Groq key.
@@ -10,7 +11,7 @@ export async function POST(request: NextRequest) {
 
   const { data: c } = await supabaseAdmin.from('complaints').select(PUBLIC_COMPLAINT_COLUMNS).eq('uid', uid.toUpperCase()).single();
   if (!c) return NextResponse.json({ success: false, message: 'Issue not found.' }, { status: 404 });
-  const row = c as unknown as Record<string, string | null>;
+  const row = blurLocation(c as unknown as Record<string, string | null>);
   const { data: dept } = row.department_id
     ? await supabaseAdmin.from('departments').select('name').eq('id', row.department_id).single()
     : { data: null };
