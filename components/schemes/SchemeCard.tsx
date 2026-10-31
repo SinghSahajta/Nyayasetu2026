@@ -6,6 +6,7 @@ import { Calendar, Tag, ArrowRight, Clock } from 'lucide-react';
 import type { Scheme } from '@/types';
 import { useLanguage } from '@/components/layout/LanguageProvider';
 import { useTranslation } from 'react-i18next';
+import { schemeDepartment, schemeGroup } from '@/constants/schemeLabels';
 
 interface SchemeCardProps {
   scheme: Scheme;
@@ -79,7 +80,7 @@ export default function SchemeCard({ scheme }: SchemeCardProps) {
         {scheme.target_groups.slice(0, 3).map((group) => (
           <span key={group} className="inline-flex items-center gap-1 text-xs text-gray-500 bg-gray-50 px-2 py-0.5 rounded">
             <Tag className="w-3 h-3" />
-            {group.replace(/_/g, ' ')}
+            {schemeGroup(group.replace(/_/g, ' '), language)}
           </span>
         ))}
       </div>
@@ -87,7 +88,7 @@ export default function SchemeCard({ scheme }: SchemeCardProps) {
       {/* Department */}
       <p className="text-xs text-gray-400 mb-4">
         <Calendar className="w-3 h-3 inline mr-1" />
-        {scheme.department}
+        {schemeDepartment(scheme.department, language)}
       </p>
 
       {/* View Details Button */}

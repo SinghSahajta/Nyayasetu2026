@@ -61,7 +61,7 @@ export default function PhoneVerifyFlow({ onVerified }: PhoneVerifyFlowProps) {
         setError(data.message || 'Failed to send OTP.');
       }
     } catch {
-      setError('Network error. Please try again.');
+      setError(t('common.networkError'));
     } finally {
       setLoading(false);
     }
@@ -92,7 +92,7 @@ export default function PhoneVerifyFlow({ onVerified }: PhoneVerifyFlowProps) {
         setError(t('otp.errBad'));
       }
     } catch {
-      setError('Network error. Please try again.');
+      setError(t('common.networkError'));
     } finally {
       setLoading(false);
     }

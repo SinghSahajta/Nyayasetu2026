@@ -16,6 +16,7 @@ import {
 import type { Scheme } from '@/types';
 import { useLanguage } from '@/components/layout/LanguageProvider';
 import { useTranslation } from 'react-i18next';
+import { schemeDepartment, schemeGroup } from '@/constants/schemeLabels';
 
 const CATEGORY_COLORS: Record<string, string> = {
   students: 'bg-blue-100 text-blue-700',
@@ -121,7 +122,7 @@ export default function SchemeDetailPage() {
 
           <div className="flex items-center gap-2 text-sm text-gray-500 mt-4">
             <Building2 className="w-4 h-4" />
-            <span>{scheme.department}</span>
+            <span>{schemeDepartment(scheme.department, language)}</span>
           </div>
         </div>
 
@@ -250,7 +251,7 @@ export default function SchemeDetailPage() {
                 <div className="flex flex-wrap gap-2">
                   {scheme.target_groups.map((group) => (
                     <span key={group} className="text-xs bg-indigo-50 text-indigo-600 px-2.5 py-1 rounded-full font-medium">
-                      {group.replace(/_/g, ' ')}
+                      {schemeGroup(group.replace(/_/g, ' '), language)}
                     </span>
                   ))}
                 </div>
