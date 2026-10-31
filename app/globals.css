@@ -303,20 +303,24 @@ html:not(.dark) .bg-white.rounded-xl:not(.glow-card):hover, html:not(.dark) .bg-
 
 
 /* Home hero: the reel sits behind the headline, a veil keeps the text legible. */
-.hero-veil { background: radial-gradient(ellipse 46% 40% at 50% 50%, rgba(245, 239, 225, .84), rgba(245, 239, 225, .5) 62%, rgba(245, 239, 225, .1)); }
+.hero-veil { background: radial-gradient(ellipse 46% 40% at 50% 50%, rgba(244, 233, 214, .84), rgba(244, 233, 214, .5) 62%, rgba(244, 233, 214, .1)); }
 .dark .hero-veil { background: radial-gradient(ellipse 46% 40% at 50% 50%, rgba(14, 26, 32, .86), rgba(14, 26, 32, .52) 62%, rgba(14, 26, 32, .12)); }
 
-/* ---- Light mode background: almond-milk surface ----
+/* ---- Light mode background: silky cream photo + almond-milk texture ----
    Procedural and seamless (SVG fractal noise mapped to #E8DCC4 / #EDE4D0 / #F5EFE1, plus a very fine grain).
    One fixed layer behind the page that drifts very slowly; page-wide sections are transparent so it shows. */
 html:not(.dark) body::before {
   content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
-  background-color: #f5efe1;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45  0 0 0 0 .38  0 0 0 0 .28  0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='800'%3E%3Cfilter id='a' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.0035 0.006' numOctaves='3' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='.8 .8 .8 0 -.7  .8 .8 .8 0 -.7  .8 .8 .8 0 -.7  0 0 0 0 1'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='table' tableValues='.910 .929 .961'/%3E%3CfeFuncG type='table' tableValues='.863 .894 .937'/%3E%3CfeFuncB type='table' tableValues='.769 .816 .882'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23a%29'/%3E%3C/svg%3E");
-  background-size: 160px 160px, 800px 800px;
+  background-color: #f0e2c8;
+  /* top to bottom: fine grain, almond-milk waves (soft-light blended), blurred silky cream photo */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45  0 0 0 0 .38  0 0 0 0 .28  0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='800'%3E%3Cfilter id='a' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.0035 0.006' numOctaves='3' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='.8 .8 .8 0 -.7  .8 .8 .8 0 -.7  .8 .8 .8 0 -.7  0 0 0 0 1'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='table' tableValues='.910 .929 .961'/%3E%3CfeFuncG type='table' tableValues='.863 .894 .937'/%3E%3CfeFuncB type='table' tableValues='.769 .816 .882'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23a%29'/%3E%3C/svg%3E"), url("/bg/silk.jpg");
+  background-size: 160px 160px, 800px 800px, cover;
+  background-position: 0 0, 0 0, center;
+  background-repeat: repeat, repeat, no-repeat;
+  background-blend-mode: normal, soft-light, normal;
   animation: almond-drift 240s linear infinite;
 }
-@keyframes almond-drift { to { background-position: 160px 80px, 800px 400px; } }
+@keyframes almond-drift { to { background-position: 160px 80px, 800px 400px, center; } }
 @media (prefers-reduced-motion: reduce) { html:not(.dark) body::before { animation: none; } }
 
 html:not(.dark) .hero-smoke,
