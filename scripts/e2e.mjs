@@ -36,14 +36,14 @@ const scores = feed.json.issues.map((i) => i.priority_score);
 assert.deepEqual(scores, [...scores].sort((a, b) => b - a), 'feed sorted by priority');
 const top = feed.json.issues[0];
 const tracked = await api(`/api/complaints/track/${top.uid}`);
-for (const k of ['citizen_phone', 'citizen_name', 'citizen_id', 'assigned_officer_id']) assert.ok(!(k in tracked.json.complaint), `tracker leaks ${k}`);
+for (const k of ['citizen_phone', 'consent_phone', 'reporter_device', 'citizen_id', 'assigned_officer_id']) assert.ok(!(k in tracked.json.complaint), `tracker leaks ${k}`);
 assert.equal(tracked.json.complaint.priority_breakdown.length, 5);
 step(`public feed sorted (${feed.json.issues.length} open), tracker hides reporter details`);
 
 // 2. File a geo-tagged issue 40 m from an existing open sewer issue (Lajpat Nagar)
 const token = await citizenSession('9876500001');
 const filed = await api('/api/complaints', {
-  session_token: token, name: 'E2E Tester', title: 'Manhole overflowing in Lajpat Nagar market lane',
+  session_token: token, consent_phone: false, device_id: 'e2e-reporter-device', title: 'Manhole overflowing in Lajpat Nagar market lane',
   category: 'sewer_blockage', description: 'The manhole cover is broken and sewage is spilling into the market lane, children walk here.',
   address: '', landmark: null, ward: null, latitude: 28.56803, longitude: 77.24336, photo: PHOTO,
 });
@@ -60,14 +60,13 @@ const near = await api('/api/complaints/nearby?lat=28.56803&lng=77.24336&categor
 assert.ok(near.json.issues.length >= 2);
 step(`duplicate check finds ${near.json.issues.length} open sewer reports within 150 m`);
 
-// 3. "I see this too" from a second phone raises the score; repeat is rejected; reporter can't self-confirm
+// 3. "I see this too" from a second browser raises the score; repeat is rejected; reporter can't self-confirm
 const before = (await api(`/api/complaints/track/${filed.json.complaint_uid}`)).json.complaint.priority_score;
-const t2 = await citizenSession('9876500002');
-const c1 = await api(`/api/complaints/track/${filed.json.complaint_uid}/confirm`, { session_token: t2 });
+const c1 = await api(`/api/complaints/track/${filed.json.complaint_uid}/confirm`, { device_id: 'e2e-other-device' });
 assert.equal(c1.json.success, true, JSON.stringify(c1.json));
 assert.ok(c1.json.priority.score >= before);
-assert.equal((await api(`/api/complaints/track/${filed.json.complaint_uid}/confirm`, { session_token: t2 })).status, 409);
-assert.equal((await api(`/api/complaints/track/${filed.json.complaint_uid}/confirm`, { session_token: token })).status, 409);
+assert.equal((await api(`/api/complaints/track/${filed.json.complaint_uid}/confirm`, { device_id: 'e2e-other-device' })).status, 409);
+assert.equal((await api(`/api/complaints/track/${filed.json.complaint_uid}/confirm`, { device_id: 'e2e-reporter-device' })).status, 409);
 step(`confirmation: score ${before} → ${c1.json.priority.score}; duplicate and self-confirm rejected`);
 
 // 4. Officer (Water & Sewerage) works it; another officer can't touch it
@@ -92,7 +91,7 @@ assert.equal(cron.json.success, true);
 step(`cron: ${cron.json.message}`);
 
 // 6. Validation at the trust boundary
-const bad = await api('/api/complaints', { session_token: token, name: 'x', title: 'x', category: 'pothole', description: 'a'.repeat(40), latitude: 51.5, longitude: -0.12 });
+const bad = await api('/api/complaints', { session_token: token, consent_phone: false, device_id: 'x', title: 'x', category: 'pothole', description: 'a'.repeat(40), latitude: 51.5, longitude: -0.12 });
 assert.equal(bad.status, 400);
 step('rejects locations outside India');
 console.log('\nAll end-to-end checks passed.');

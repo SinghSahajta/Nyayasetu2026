@@ -3,8 +3,9 @@
  *
  *   npm run seed:demo
  *
- * WIPES all complaints and users, then creates staff logins, ~45 issues across
- * every status, confirmations and duplicates. Nearby-place data comes from the
+ * WIPES all complaints and users, then creates staff logins and demo issues (7 by default,
+ * --limit=N for more) across every status, with confirmations. Citizens are anonymous: no name, no
+ * account; every third demo issue opted in to share a phone with the officer. Nearby-place data comes from the
  * real OpenStreetMap API for each pin; AI severity is used only if GROQ_API_KEY
  * is set (otherwise the score uses the honest category baseline).
  */
@@ -104,9 +105,11 @@ const STATUS_FOR_AGE = (ageH: number, slaH: number): S => {
   return r < 0.15 ? S.IN_PROGRESS : r < 0.85 ? S.ASSIGNED : S.SUBMITTED;
 };
 
+const LIMIT = Math.min(ISSUES.length, Number(process.argv.find((a) => a.startsWith('--limit='))?.slice(8)) || 7);
+
 async function main() {
   if (!process.argv.includes('--yes')) {
-    console.log('This WIPES all complaints and users in the configured Supabase project.\nRun: npm run seed:demo -- --yes');
+    console.log('This WIPES all complaints and users in the configured Supabase project.\nRun: npm run seed:demo -- --yes [--limit=7]');
     process.exit(1);
   }
   const t0 = Date.now();
@@ -124,12 +127,12 @@ async function main() {
     if (s.department_id) officers[s.department_id] = data.id;
   }
 
-  console.log(`Creating ${ISSUES.length} issues (looking up nearby places on OpenStreetMap, ~1 s each)…`);
+  console.log(`Creating ${LIMIT} issues (looking up nearby places on OpenStreetMap, ~1 s each)…`);
   const now = Date.now();
   const useAI = !!process.env.GROQ_API_KEY;
-  for (const [idx, [title, category, description, lat, lng, place, city, state]] of ISSUES.entries()) {
+  for (const [idx, [title, category, description, lat, lng, place, city, state]] of ISSUES.slice(0, LIMIT).entries()) {
+    const consent = idx % 3 === 0; // opted in to share a phone with the officer (the DB erases it when resolved/closed)
     const phone = `98${String(10000000 + idx * 7919).slice(0, 8)}`;
-    const { data: citizen } = await db.from('users').insert({ phone, full_name: `Demo Citizen ${idx + 1}`, role: 'citizen' }).select('id').single();
 
     const ageH = 2 + Math.floor(rand() * 20 * 24); // up to 20 days old
     const created = new Date(now - ageH * HOUR);
@@ -146,9 +149,9 @@ async function main() {
 
     const { data: c, error } = await db.from('complaints').insert({
       uid: `NYC-${created.toISOString().slice(0, 10).replace(/-/g, '')}-${String(10001 + idx)}`,
-      citizen_id: citizen!.id,
-      citizen_phone: phone,
-      citizen_name: `Demo Citizen ${idx + 1}`,
+      citizen_phone: consent ? phone : null,
+      consent_phone: consent,
+      reporter_device: `demo-reporter-${idx}`,
       title, category, description,
       department_id: cls.department_id,
       location_text: place, city, state,
@@ -172,17 +175,17 @@ async function main() {
     if (done) steps.push([S.RESOLVED, 'Marked resolved by the officer.', (resolvedAt!.getTime() - created.getTime()) / HOUR]);
     if (status === S.CLOSED) steps.push([S.CLOSED, 'Closed after citizen feedback.', (resolvedAt!.getTime() - created.getTime()) / HOUR + 6]);
     await db.from('complaint_updates').insert(steps.map(([st, note, h]) => ({
-      complaint_id: c!.id, status: st, changed_by: st === S.SUBMITTED ? citizen!.id : 'system', public_note: note,
+      complaint_id: c!.id, status: st, changed_by: st === S.SUBMITTED ? 'citizen' : 'system', public_note: note,
       created_at: new Date(created.getTime() + h * HOUR).toISOString(),
     })));
 
     // Some open issues get "I see this too" confirmations
     if (!done && rand() < 0.55) {
       const n = 1 + Math.floor(rand() * 9);
-      await db.from('complaint_confirmations').insert(Array.from({ length: n }, (_, k) => ({ complaint_id: c!.id, phone: `97${idx}${k}`.padEnd(10, '0') })));
+      await db.from('complaint_confirmations').insert(Array.from({ length: n }, (_, k) => ({ complaint_id: c!.id, device_id: `demo-device-${idx}-${k}` })));
       await db.from('complaints').update({ confirmations: n }).eq('id', c!.id);
     }
-    process.stdout.write(`  ${idx + 1}/${ISSUES.length} ${city}: ${title}\n`);
+    process.stdout.write(`  ${idx + 1}/${LIMIT} ${city}: ${title}\n`);
   }
 
   console.log('Escalating overdue issues and scoring everything…');
