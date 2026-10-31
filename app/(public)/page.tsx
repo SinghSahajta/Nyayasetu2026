@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { MapPin, ArrowRight, ArrowDown, AlertTriangle, Users, Clock, CloudRain, Camera, ListOrdered, CheckCircle2, MessageSquare, Scale, HandHelping, Eye } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { WEIGHTS } from '@/lib/priority';
+import LuminousType from '@/components/home/LuminousType';
 import ElasticReel, { type ReelItem } from '@/components/home/ElasticReel';
 import { PriorityWhy } from '@/components/priority/PriorityBreakdown';
 import type { PriorityBand } from '@/types';
@@ -94,9 +95,16 @@ export default function LandingPage() {
           <p className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100 text-indigo-800 text-sm font-medium mb-6">
             <MapPin className="w-4 h-4" /> {t('landing.v2.badge', { defaultValue: 'Civic issues, India-wide' })}
           </p>
-          <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 tracking-tight leading-[1.08] max-w-4xl">
-            {t('landing.v2.headline', { defaultValue: 'Report it. See how urgent it is. Watch it get fixed.' })}
-          </h1>
+          {/* The hero text layer ignores the pointer (so the reel behind it gets it), so no click-to-reveal here. */}
+          <LuminousType
+            as="h1"
+            text={t('landing.v2.headline', { defaultValue: 'Report it. See how urgent it is. Watch it get fixed.' })}
+            className="text-5xl md:text-7xl font-extrabold text-gray-900 tracking-tight leading-[1.08] max-w-4xl"
+            baseOpacity={0.3}
+            radius={3.4}
+            tint="rgba(26, 125, 144, .35)"
+            clickToReveal={false}
+          />
           <p className="text-lg text-gray-600 mt-6 max-w-2xl">
             {t('landing.v2.sub', { defaultValue: 'Pin a pothole, garbage dump or dead streetlight on the map. We score its priority, explain every point, and show everyone its progress until it is resolved.' })}
           </p>
