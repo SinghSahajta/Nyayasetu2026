@@ -53,7 +53,16 @@
     "getStarted": "Get Started",
     "ctaTitle": "Ready to make your voice heard?",
     "ctaSub": "Join thousands of Delhi citizens building a better city.",
-    "ctaButton": "File a Complaint Now"
+    "ctaButton": "File a Complaint Now",
+    "v2": {
+      "badge": "Civic issues, India-wide",
+      "headline": "Report it. See how urgent it is. Watch it get fixed.",
+      "sub": "Pin a pothole, garbage dump or dead streetlight on the map. We score its priority, explain every point, and show everyone its progress until it is resolved.",
+      "report": "Report an issue",
+      "map": "See the live map",
+      "chat": "Report by chat (Hindi / English)",
+      "topNow": "Highest priority right now"
+    }
   },
   "about": {
     "title": "About NyayaSetu",
@@ -94,7 +103,9 @@
     "starter2": "Garbage has not been picked up in our street for 4 days",
     "starter3": "The streetlight outside the school is not working",
     "starter4": "Sewage water is overflowing onto the road",
-    "openReport": "Open the pre-filled report"
+    "openReport": "Open the pre-filled report",
+    "errorGeneral": "Sorry, something went wrong. Please try again.",
+    "errorNetwork": "Network error. Please check your connection and try again."
   },
   "complaint": {
     "fileTitle": "File a Complaint",
@@ -253,6 +264,288 @@
     "benefits": "Benefits",
     "howToApply": "How to Apply",
     "documents": "Required Documents",
-    "back": "Back to Schemes"
+    "back": "Back to Schemes",
+    "about": "About This Scheme",
+    "any": "Any",
+    "applyBefore": "Apply before",
+    "deadline": "Deadline",
+    "deadlineAlert": "Deadline Approaching!",
+    "maxIncome": "Max Income",
+    "noLimit": "No limit",
+    "notFound": "Scheme not found",
+    "quickInfo": "Quick Info",
+    "tags": "Tags",
+    "targetGroups": "Target Groups",
+    "year": "year"
+  },
+  "common": {
+    "close": "Close",
+    "viewAll": "View all →",
+    "loading": "Loading…",
+    "networkError": "Network error. Please try again.",
+    "wentWrong": "Something went wrong. Please try again."
+  },
+  "cities": {
+    "Delhi": "Delhi",
+    "Neemrana": "Neemrana"
+  },
+  "deptNames": {
+    "Sanitation & Solid Waste": "Sanitation & Solid Waste",
+    "Water & Sewerage": "Water & Sewerage",
+    "Electrical & Street Lighting": "Electrical & Street Lighting",
+    "Roads & Infrastructure": "Roads & Infrastructure",
+    "Parks & Environment": "Parks & Environment",
+    "Animal Control": "Animal Control",
+    "Anti-Encroachment": "Anti-Encroachment"
+  },
+  "home": {
+    "scrollCue": "See what is being fixed right now",
+    "noOpen": "No open issues yet.",
+    "confirmations_one": "{{count}} confirmation",
+    "confirmations_other": "{{count}} confirmations",
+    "ticker": {
+      "total": "Issues reported",
+      "resolved": "Resolved",
+      "open": "Still open",
+      "onTime": "Resolved on time",
+      "avg": "Avg. time to fix"
+    },
+    "hoursShort": "h",
+    "feat1": {
+      "title": "Pin & snap",
+      "body": "Drop a pin, add a photo. Already reported nearby? Confirm it instead of duplicating."
+    },
+    "feat2": {
+      "title": "Scored automatically",
+      "body": "A 0–100 priority with a reason for every point. Officers work from the top of the list."
+    },
+    "feat3": {
+      "title": "Tracked in public",
+      "body": "Deadlines, auto-escalation and before/after photos that anyone can check."
+    },
+    "score": {
+      "title": "How the priority score works",
+      "sub": "Transparent by design: five factors, fixed weights, a written reason for each one.",
+      "upTo": "up to {{n}} pts",
+      "bands": "Bands: P1 Critical ≥ 70, P2 High ≥ 50, P3 Medium ≥ 30, P4 Low.",
+      "line": {
+        "severity": "An open manhole outranks a faded sign.",
+        "frequency": "Verified reports push it up. Spam cannot.",
+        "location": "Schools, hospitals and main roads count more.",
+        "time": "The longer it waits, the higher it climbs.",
+        "season": "Blocked drains matter more in monsoon."
+      }
+    },
+    "trust1": {
+      "title": "Same rules for everyone",
+      "body": "One formula scores every report in every ward."
+    },
+    "trust2": {
+      "title": "No one can bump a score",
+      "body": "Not officers, not supervisors, not us."
+    },
+    "trust3": {
+      "title": "Every point has a reason",
+      "body": "Tap the ⓘ next to any score to read why."
+    },
+    "reelAria": "Photos of common civic problems. Hover to magnify, click to open.",
+    "reel": {
+      "waterlogging": "Waterlogging",
+      "pothole": "Potholes",
+      "wires": "Tangled wires",
+      "garbage": "Garbage dumping",
+      "streetlight": "Broken streetlights",
+      "manhole": "Open manholes",
+      "river": "River pollution",
+      "smog": "Smog"
+    }
+  },
+  "priority": {
+    "why": "Why this priority?",
+    "intro": "Calculated automatically from five factors. Every point is explained.",
+    "band": {
+      "P1": "Critical",
+      "P2": "High",
+      "P3": "Medium",
+      "P4": "Low"
+    },
+    "factor": {
+      "severity": "Severity",
+      "location": "Location sensitivity",
+      "frequency": "Reports & confirmations",
+      "time": "Time pressure",
+      "season": "Seasonal risk"
+    },
+    "severityRead": "Severity read",
+    "loadFail": "Could not load the breakdown. Try again.",
+    "sameFormula": "Same formula for every report, nobody sets scores by hand.",
+    "openIssue": "Open issue →"
+  },
+  "issues": {
+    "title": "Public issue tracker",
+    "sub": "Every reported issue, ranked by an explainable priority score. Open one to see why it ranks where it does.",
+    "report": "Report an issue",
+    "status": "Status",
+    "areaLabel": "Area",
+    "catLabel": "Category",
+    "open": "Open issues",
+    "resolved": "Resolved",
+    "all": "All",
+    "allCats": "All categories",
+    "allIndia": "All of India",
+    "none": "No issues match these filters.",
+    "escalated": "Escalated"
+  },
+  "detail": {
+    "notFound": "Issue not found.",
+    "backAll": "← Back to all issues",
+    "allIssues": "All issues",
+    "step": {
+      "submitted": "Reported",
+      "assigned": "Assigned",
+      "in_progress": "Work started",
+      "resolved": "Resolved"
+    },
+    "escalatedNote": "Escalated to a supervisor because the resolution deadline passed.",
+    "whatReported": "What was reported",
+    "photoAlt": "Photo from the report",
+    "before": "Before (citizen photo)",
+    "proofAlt": "Proof of the fix",
+    "after": "After (officer proof)",
+    "fixNotes": "Fix notes",
+    "timeline": "Timeline",
+    "deptPending": "Department pending",
+    "officerNone": "Officer not assigned yet",
+    "confirmed_one": "{{count}} person confirmed this",
+    "confirmed_other": "{{count}} people confirmed this",
+    "thanks_one": "Thanks! {{count}} person has now confirmed this issue.",
+    "thanks_other": "Thanks! {{count}} people have now confirmed this issue.",
+    "seeingToo": "Seeing this problem too?",
+    "seeingTooBody": "Each verified confirmation raises the priority. One per phone number.",
+    "iSeeToo": "I see this too"
+  },
+  "stats": {
+    "title": "Transparency dashboard",
+    "sub": "Public numbers on how fast reported issues actually get fixed. Updated live.",
+    "reported": "Reported",
+    "open": "Open",
+    "overdue": "Overdue",
+    "onTime": "Resolved on time",
+    "avgFix": "Avg. time to fix",
+    "byPriority": "Open issues by priority",
+    "byCity": "By city",
+    "byCategory": "By category",
+    "col": {
+      "name": "Name",
+      "reported": "Reported",
+      "open": "Open",
+      "overdue": "Overdue",
+      "onTime": "On time",
+      "avg": "Avg. fix"
+    }
+  },
+  "score": {
+    "title": "Accountability score by city",
+    "desc": "Out of 100: 40 for issues resolved, 35 for fixed on time, 25 for nothing left overdue. Computed from the public numbers below, no hidden inputs.",
+    "grade": "Grade {{g}}",
+    "f": {
+      "resolved": "Issues resolved",
+      "onTime": "Fixed on time",
+      "overdue": "Nothing left overdue"
+    },
+    "r": {
+      "resolved": "{{r}} of {{t}} reported issues are resolved",
+      "noneResolved": "No resolved issues yet",
+      "onTime": "{{p}}% of resolved issues met their deadline",
+      "overdue": "{{o}} of {{n}} open issues are past their deadline",
+      "noOpen": "No open issues"
+    }
+  },
+  "audit": {
+    "ok": "Audit log verified",
+    "fail": "Audit log failed verification",
+    "desc": "Each update stores a SHA-256 hash of the one before it. Changing or deleting any past update breaks every hash after it, and this check is re-run each time you open the page.",
+    "show": "Show the chain ({{n}} entries)",
+    "valid": "valid",
+    "broken": "broken"
+  },
+  "rti": {
+    "title": "Overdue? Ask under RTI",
+    "desc": "Drafts a Section 6(1) RTI application asking the department what was done and why it is late. Fill in your name and address, then file it with the department.",
+    "draft": "Draft RTI application",
+    "copy": "Copy",
+    "copied": "Copied",
+    "download": "Download",
+    "fail": "Could not draft the RTI."
+  },
+  "advisor": {
+    "title": "Ask the scheme advisor",
+    "sub": "Answers only from the schemes listed below, in Hindi or English.",
+    "ex1": "I am a 20 year old student, what can I get?",
+    "ex2": "I am a widow, which scheme can I get?",
+    "ex3": "Schemes for a small shop owner",
+    "placeholder": "Tell me about yourself, e.g. age, work, family...",
+    "send": "Send"
+  },
+  "complaints": {
+    "address": "Address",
+    "aiPreview": "🤖 AI Classification Preview",
+    "back": "Back",
+    "btnTrack": "Track Complaint",
+    "category": "Category",
+    "characters": "characters",
+    "complaintTitle": "Complaint Title",
+    "completedBefore": "Completed before deadline",
+    "confidence": "Confidence",
+    "copied": "Copied!",
+    "copyId": "Copy ID",
+    "department": "Department",
+    "description": "Description",
+    "detailsTitle": "Complaint Details",
+    "editDetails": "Edit Details",
+    "enterId": "Please enter a Complaint ID.",
+    "errorSelectRating": "Please select a rating.",
+    "errorSubmitRating": "Failed to submit feedback.",
+    "feedbackThanks": "Thank you for your feedback!",
+    "fileAnother": "File Another Complaint",
+    "fileSubtitle": "Report a civic issue in your area",
+    "fileTitle": "File a Complaint",
+    "id": "Complaint ID",
+    "idPlaceholder": "e.g. NYC-20260325-00042",
+    "landmark": "Landmark",
+    "minChars": "min 30 characters",
+    "name": "Name",
+    "networkError": "Network error. Please try again.",
+    "noTimelineUpdates": "No timeline updates available.",
+    "notFound": "Complaint not found.",
+    "overdueBy": "Overdue by",
+    "phone": "Phone",
+    "predictedCategory": "Predicted Category",
+    "rateExperience": "Rate Your Experience",
+    "remaining": "remaining",
+    "resolvedAfterSla": "Resolved after SLA breach",
+    "resolvedWithinSla": "Resolved within SLA",
+    "reviewBtn": "Review",
+    "reviewYourComplaint": "Review Your Complaint",
+    "saveIdDesc": "<strong>Save your Complaint ID!</strong> You'll need it to track progress. Share it with anyone helping you follow up on this issue.",
+    "shareExperience": "Share your experience (optional)...",
+    "slaBreached": "SLA Breached",
+    "slaDeadline": "SLA Deadline",
+    "slaExceeded": "SLA was exceeded by",
+    "submitComplaint": "Submit Complaint",
+    "submitFeedbackBtn": "Submit Feedback",
+    "successDesc": "Your complaint has been registered. Save the ID below to track progress.",
+    "successTitle": "Complaint Filed Successfully!",
+    "titleLabel": "Title",
+    "trackHelp": "Your Complaint ID was given when you filed the complaint (format: NYC-XXXXXXXX-XXXXX)",
+    "trackStatus": "Track This Complaint",
+    "trackSubtitle": "Enter your Complaint ID to check its current status",
+    "trackTitle": "Track Your Complaint",
+    "urgency": "Urgency",
+    "ward": "Ward",
+    "yourName": "Your Name"
+  },
+  "generic": {
+    "optional": "optional"
   }
 }

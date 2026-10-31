@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { MapPin, ArrowRight, ArrowDown, AlertTriangle, Users, Clock, CloudRain, Camera, ListOrdered, CheckCircle2, MessageSquare, Scale, HandHelping, Eye } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { WEIGHTS } from '@/lib/priority';
-import ElasticReel, { type ReelItem } from '@/components/home/ElasticReel';
+import ElasticReel from '@/components/home/ElasticReel';
 import { PriorityWhy } from '@/components/priority/PriorityBreakdown';
 import type { PriorityBand } from '@/types';
 
@@ -14,35 +14,37 @@ interface TopIssue { uid: string; title: string; city: string | null; priority_b
 
 // Points come from the real weights in lib/priority.ts, so this page can't drift from the scoring code.
 const FACTORS = [
-  { icon: AlertTriangle, name: 'Severity', max: WEIGHTS.severity, line: 'An open manhole outranks a faded sign.' },
-  { icon: Users, name: 'Reports & confirmations', max: WEIGHTS.frequency, line: 'Verified reports push it up. Spam cannot.' },
-  { icon: MapPin, name: 'Location sensitivity', max: WEIGHTS.location, line: 'Schools, hospitals and main roads count more.' },
-  { icon: Clock, name: 'Time pressure', max: WEIGHTS.time, line: 'The longer it waits, the higher it climbs.' },
-  { icon: CloudRain, name: 'Seasonal risk', max: WEIGHTS.season, line: 'Blocked drains matter more in monsoon.' },
-];
+  { icon: AlertTriangle, key: 'severity', max: WEIGHTS.severity },
+  { icon: Users, key: 'frequency', max: WEIGHTS.frequency },
+  { icon: MapPin, key: 'location', max: WEIGHTS.location },
+  { icon: Clock, key: 'time', max: WEIGHTS.time },
+  { icon: CloudRain, key: 'season', max: WEIGHTS.season },
+] as const;
 
-const REEL: ReelItem[] = [
-  { src: '/reel/waterlogging.png', alt: 'A flooded road with cars and a scooter wading through water', title: 'Waterlogging', subtitle: 'Water & Sewerage' },
-  { src: '/reel/pothole.png', alt: 'A large water-filled pothole in the middle of a road', title: 'Potholes', subtitle: 'Roads & Infrastructure' },
-  { src: '/reel/wires.png', alt: 'A utility pole with a dangerous tangle of cables', title: 'Tangled wires', subtitle: 'Electrical & Street Lighting' },
-  { src: '/reel/garbage.png', alt: 'Garbage dumped at the foot of a wall', title: 'Garbage dumping', subtitle: 'Sanitation & Solid Waste' },
-  { src: '/reel/streetlight.png', alt: 'A damaged streetlight at dusk with loose cabling', title: 'Broken streetlights', subtitle: 'Electrical & Street Lighting' },
-  { src: '/reel/manhole.png', alt: 'An open manhole beside a footpath', title: 'Open manholes', subtitle: 'Water & Sewerage' },
-  { src: '/reel/river.png', alt: 'Toxic foam on a river below a bridge', title: 'River pollution', subtitle: 'Parks & Environment' },
-  { src: '/reel/smog.png', alt: 'A smoggy street with a landmark barely visible', title: 'Smog', subtitle: 'Parks & Environment' },
+// Titles and department names are translated at render time (home.reel.*, deptNames.*).
+const REEL = [
+  { src: '/reel/waterlogging.png', key: 'waterlogging', alt: 'A flooded road with cars and a scooter wading through water', dept: 'Water & Sewerage' },
+  { src: '/reel/pothole.png', key: 'pothole', alt: 'A large water-filled pothole in the middle of a road', dept: 'Roads & Infrastructure' },
+  { src: '/reel/wires.png', key: 'wires', alt: 'A utility pole with a dangerous tangle of cables', dept: 'Electrical & Street Lighting' },
+  { src: '/reel/garbage.png', key: 'garbage', alt: 'Garbage dumped at the foot of a wall', dept: 'Sanitation & Solid Waste' },
+  { src: '/reel/streetlight.png', key: 'streetlight', alt: 'A damaged streetlight at dusk with loose cabling', dept: 'Electrical & Street Lighting' },
+  { src: '/reel/manhole.png', key: 'manhole', alt: 'An open manhole beside a footpath', dept: 'Water & Sewerage' },
+  { src: '/reel/river.png', key: 'river', alt: 'Toxic foam on a river below a bridge', dept: 'Parks & Environment' },
+  { src: '/reel/smog.png', key: 'smog', alt: 'A smoggy street with a landmark barely visible', dept: 'Parks & Environment' },
 ];
 
 const TRUST = [
-  { icon: Scale, title: 'Same rules for everyone', body: 'One formula scores every report in every ward.' },
-  { icon: HandHelping, title: 'No one can bump a score', body: 'Not officers, not supervisors, not us.' },
-  { icon: Eye, title: 'Every point has a reason', body: 'Tap the ⓘ next to any score to read why.' },
-];
+  { icon: Scale, n: 1 },
+  { icon: HandHelping, n: 2 },
+  { icon: Eye, n: 3 },
+] as const;
 
 export default function LandingPage() {
   const { t } = useTranslation();
   const [stats, setStats] = useState<Overall | null>(null);
   const [top, setTop] = useState<TopIssue[]>([]);
   const hero = useRef<HTMLDivElement>(null);
+  const reelItems = REEL.map((r) => ({ src: r.src, alt: r.alt, title: t(`home.reel.${r.key}`), subtitle: t(`deptNames.${r.dept}`) }));
   const [reelH, setReelH] = useState(640);
   const [reelOpen, setReelOpen] = useState(false);
 
@@ -73,11 +75,11 @@ export default function LandingPage() {
   }, []);
 
   const ticker = stats && [
-    { label: 'Issues reported', value: stats.total },
-    { label: 'Resolved', value: stats.resolved },
-    { label: 'Still open', value: stats.open },
-    { label: 'Resolved on time', value: stats.on_time_rate == null ? '–' : `${stats.on_time_rate}%` },
-    { label: 'Avg. time to fix', value: stats.avg_resolution_hours == null ? '–' : `${stats.avg_resolution_hours} h` },
+    { label: t('home.ticker.total'), value: stats.total },
+    { label: t('home.ticker.resolved'), value: stats.resolved },
+    { label: t('home.ticker.open'), value: stats.open },
+    { label: t('home.ticker.onTime'), value: stats.on_time_rate == null ? '–' : `${stats.on_time_rate}%` },
+    { label: t('home.ticker.avg'), value: stats.avg_resolution_hours == null ? '–' : `${stats.avg_resolution_hours} ${t('home.hoursShort')}` },
   ];
 
   return (
@@ -87,7 +89,7 @@ export default function LandingPage() {
         <div ref={hero} className="sticky top-[72px] z-30 h-[calc(100vh-72px)] overflow-hidden">
           {/* Reel fills the hero; the veil keeps the headline readable. Pointer events pass through the text to the reel. */}
           <div className="absolute inset-0 z-0">
-            <ElasticReel items={REEL} height={reelH} barWidth={116} gap={20} barHeight={0.68} influence={360} magnify={2.0} lift={1.12} radius={20} onOpenChange={(i) => setReelOpen(i >= 0)} />
+            <ElasticReel ariaLabel={t('home.reelAria')} items={reelItems} height={reelH} barWidth={116} gap={20} barHeight={0.68} influence={360} magnify={2.0} lift={1.12} radius={20} onOpenChange={(i) => setReelOpen(i >= 0)} />
           </div>
           <div className="hero-veil absolute inset-0 z-[1] pointer-events-none transition-opacity duration-500" style={{ opacity: reelOpen ? 0 : 1 }} />
           <div className={`relative z-10 h-full flex flex-col items-center justify-center text-center px-4 pointer-events-none transition-opacity duration-500 ${reelOpen ? 'opacity-0' : 'opacity-100'}`}>
@@ -111,7 +113,7 @@ export default function LandingPage() {
               <MessageSquare className="w-4 h-4" /> {t('landing.v2.chat', { defaultValue: 'Report by chat (Hindi / English)' })}
             </Link>
           </div>
-          <p className="mt-10 text-sm text-gray-500 inline-flex items-center gap-2"><ArrowDown className="w-4 h-4 animate-bounce" /> See what is being fixed right now</p>
+          <p className="mt-10 text-sm text-gray-500 inline-flex items-center gap-2"><ArrowDown className="w-4 h-4 animate-bounce" /> {t('home.scrollCue')}</p>
           </div>
         </div>
 
@@ -119,10 +121,10 @@ export default function LandingPage() {
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-base font-semibold text-gray-900">{t('landing.v2.topNow', { defaultValue: 'Highest priority right now' })}</h2>
-              <Link href="/issues" className="text-xs text-indigo-700 font-medium hover:underline">View all →</Link>
+              <Link href="/issues" className="text-xs text-indigo-700 font-medium hover:underline">{t('common.viewAll')}</Link>
             </div>
             {top.length === 0 ? (
-              <p className="text-sm text-gray-500 py-10 text-center">No open issues yet.</p>
+              <p className="text-sm text-gray-500 py-10 text-center">{t('home.noOpen')}</p>
             ) : (
               <ol className="divide-y divide-gray-100">
                 {top.map((i, idx) => (
@@ -131,7 +133,7 @@ export default function LandingPage() {
                       <span className="w-5 text-xs tabular-nums text-gray-400">{idx + 1}</span>
                       <span className="flex-1 min-w-0">
                         <span className="block text-sm font-medium text-gray-900 truncate">{i.title}</span>
-                        <span className="block text-xs text-gray-500">{i.city ?? ''}{i.confirmations ? ` · ${i.confirmations} confirmation${i.confirmations === 1 ? '' : 's'}` : ''}</span>
+                        <span className="block text-xs text-gray-500">{i.city ? t(`cities.${i.city}`, { defaultValue: i.city }) : ''}{i.confirmations ? ` · ${t('home.confirmations', { count: i.confirmations })}` : ''}</span>
                       </span>
                       <PriorityWhy uid={i.uid} band={i.priority_band} score={i.priority_score} />
                     </Link>
@@ -166,14 +168,14 @@ export default function LandingPage() {
       <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-8">
           {[
-            { icon: Camera, title: 'Pin & snap', body: 'Drop a pin, add a photo. Already reported nearby? Confirm it instead of duplicating.' },
-            { icon: ListOrdered, title: 'Scored automatically', body: 'A 0–100 priority with a reason for every point. Officers work from the top of the list.' },
-            { icon: CheckCircle2, title: 'Tracked in public', body: 'Deadlines, auto-escalation and before/after photos that anyone can check.' },
+            { icon: Camera, n: 1 },
+            { icon: ListOrdered, n: 2 },
+            { icon: CheckCircle2, n: 3 },
           ].map((s) => (
-            <div key={s.title} className="glow-card bg-white rounded-2xl border p-8">
+            <div key={s.n} className="glow-card bg-white rounded-2xl border p-8">
               <span className="inline-flex h-14 w-14 items-center justify-center rounded-xl bg-indigo-100 text-indigo-700"><s.icon className="w-7 h-7" /></span>
-              <h3 className="text-2xl font-semibold text-gray-900 mt-5">{s.title}</h3>
-              <p className="text-gray-600 mt-3">{s.body}</p>
+              <h3 className="text-2xl font-semibold text-gray-900 mt-5">{t(`home.feat${s.n}.title`)}</h3>
+              <p className="text-gray-600 mt-3">{t(`home.feat${s.n}.body`)}</p>
             </div>
           ))}
         </div>
@@ -182,31 +184,31 @@ export default function LandingPage() {
       {/* Scoring, in plain words */}
       <section className="py-20 bg-gray-50 border-t border-slate-200">
         <div className="max-w-5xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-gray-900">How the priority score works</h2>
-          <p className="text-gray-600 mt-3">Transparent by design: five factors, fixed weights, a written reason for each one.</p>
+          <h2 className="text-3xl font-bold text-gray-900">{t('home.score.title')}</h2>
+          <p className="text-gray-600 mt-3">{t('home.score.sub')}</p>
 
           <div className="mt-8 grid md:grid-cols-5 gap-4">
             {FACTORS.map((f) => (
-              <div key={f.name} className="bg-white rounded-xl border border-slate-200 p-5">
+              <div key={f.key} className="bg-white rounded-xl border border-slate-200 p-5">
                 <f.icon className="w-5 h-5 text-indigo-700" />
-                <p className="mt-3 font-semibold text-gray-900">{f.name}</p>
-                <p className="text-sm text-indigo-800 font-medium">up to {f.max} pts</p>
-                <p className="text-xs text-gray-600 mt-2">{f.line}</p>
+                <p className="mt-3 font-semibold text-gray-900">{t(`priority.factor.${f.key}`)}</p>
+                <p className="text-sm text-indigo-800 font-medium">{t('home.score.upTo', { n: f.max })}</p>
+                <p className="text-xs text-gray-600 mt-2">{t(`home.score.line.${f.key}`)}</p>
               </div>
             ))}
           </div>
 
           <p className="mt-6 text-sm text-gray-600">
-            Bands: P1 Critical ≥ 70, P2 High ≥ 50, P3 Medium ≥ 30, P4 Low.
+            {t('home.score.bands')}
           </p>
 
           <div className="mt-10 grid md:grid-cols-3 gap-4">
             {TRUST.map((x) => (
-              <div key={x.title} className="flex gap-3 rounded-xl bg-white border border-slate-200 p-4">
+              <div key={x.n} className="flex gap-3 rounded-xl bg-white border border-slate-200 p-4">
                 <x.icon className="w-6 h-6 text-indigo-700 shrink-0" />
                 <div>
-                  <p className="font-semibold text-gray-900">{x.title}</p>
-                  <p className="text-sm text-gray-600">{x.body}</p>
+                  <p className="font-semibold text-gray-900">{t(`home.trust${x.n}.title`)}</p>
+                  <p className="text-sm text-gray-600">{t(`home.trust${x.n}.body`)}</p>
                 </div>
               </div>
             ))}

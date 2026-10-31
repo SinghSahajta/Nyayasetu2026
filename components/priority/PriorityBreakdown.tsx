@@ -3,6 +3,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
+import { localizeReason } from '@/lib/reasons';
 import { AlertTriangle, MapPin, Users, Clock, CloudRain, Info, Loader2, X } from 'lucide-react';
 import type { AISeverity, PriorityBand, PriorityFactor } from '@/types';
 
@@ -23,11 +25,12 @@ const ICONS: Record<PriorityFactor['key'], React.ElementType> = {
 };
 
 export function PriorityBadge({ band, score }: { band: PriorityBand; score?: number }) {
+  const { t } = useTranslation();
   const s = BAND_STYLE[band] ?? BAND_STYLE.P4;
   return (
     <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-xs font-semibold whitespace-nowrap shrink-0 ${s.pill}`}>
       <span className="w-2 h-2 rounded-full" style={{ background: s.hex }} aria-hidden />
-      {band} · {s.label}
+      {band} · {t(`priority.band.${band}`, { defaultValue: s.label })}
       {score !== undefined && <span className="font-normal opacity-80">({score})</span>}
     </span>
   );
@@ -35,13 +38,14 @@ export function PriorityBadge({ band, score }: { band: PriorityBand; score?: num
 
 /** Score + one bar per factor with the reason behind its points. */
 export default function PriorityBreakdown({ score, band, factors }: { score: number; band: PriorityBand; factors: PriorityFactor[] }) {
+  const { t, i18n } = useTranslation();
   const s = BAND_STYLE[band] ?? BAND_STYLE.P4;
   return (
     <div className="bg-white rounded-xl border border-slate-200 p-5">
       <div className="flex items-center justify-between gap-4 mb-4">
         <div>
-          <h3 className="text-sm font-semibold text-gray-900">Why this priority?</h3>
-          <p className="text-xs text-gray-500">Calculated automatically from five factors. Every point is explained.</p>
+          <h3 className="text-sm font-semibold text-gray-900">{t('priority.why')}</h3>
+          <p className="text-xs text-gray-500">{t('priority.intro')}</p>
         </div>
         <div className="text-right">
           <div className="text-3xl font-bold text-gray-900 leading-none">{score}<span className="text-sm text-gray-400 font-normal">/100</span></div>
@@ -55,14 +59,14 @@ export default function PriorityBreakdown({ score, band, factors }: { score: num
             <li key={f.key}>
               <div className="flex items-center justify-between text-sm">
                 <span className="flex items-center gap-2 font-medium text-gray-800">
-                  <Icon className="w-4 h-4 text-gray-400" aria-hidden /> {f.label}
+                  <Icon className="w-4 h-4 text-gray-400" aria-hidden /> {t(`priority.factor.${f.key}`, { defaultValue: f.label })}
                 </span>
                 <span className="tabular-nums text-gray-600">+{f.points} <span className="text-gray-400">/ {f.max}</span></span>
               </div>
               <div className="mt-1 h-1.5 rounded-full bg-gray-100 overflow-hidden" role="presentation">
                 <div className="h-full rounded-full" style={{ width: `${(f.points / f.max) * 100}%`, background: s.hex }} />
               </div>
-              <p className="text-xs text-gray-500 mt-1">{f.reason}</p>
+              <p className="text-xs text-gray-500 mt-1">{localizeReason(f.reason, i18n.language)}</p>
             </li>
           );
         })}
@@ -78,6 +82,7 @@ interface WhyData { factors: PriorityFactor[]; ai: AISeverity | null }
  * this issue got this score. Loads the breakdown from the public tracker endpoint on demand.
  */
 export function PriorityWhy({ uid, band, score }: { uid: string; band: PriorityBand; score: number }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState({ top: 0, left: 0 });
   const [data, setData] = useState<WhyData | null>(null);
@@ -113,31 +118,31 @@ export function PriorityWhy({ uid, band, score }: { uid: string; band: PriorityB
 
   return (
     <>
-      <button ref={btn} type="button" onClick={toggle} title="Why this priority?" aria-label="Why this priority?" aria-expanded={open} className="inline-flex items-center gap-1 rounded-full hover:ring-2 hover:ring-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-300">
+      <button ref={btn} type="button" onClick={toggle} title={t('priority.why')} aria-label={t('priority.why')} aria-expanded={open} className="inline-flex items-center gap-1 rounded-full hover:ring-2 hover:ring-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-300">
         <PriorityBadge band={band} score={score} />
         <Info className="w-3.5 h-3.5 text-indigo-500 -ml-0.5 mr-0.5" aria-hidden />
       </button>
       {open && createPortal(
         <div className="fixed inset-0 z-[2000]" onClick={() => setOpen(false)}>
           <div onClick={(e) => e.stopPropagation()} style={{ top: pos.top, left: pos.left, width: Math.min(380, window.innerWidth - 16) }} className="absolute max-h-[420px] overflow-y-auto rounded-xl shadow-2xl bg-white border border-slate-200">
-            <button type="button" onClick={() => setOpen(false)} aria-label="Close" className="absolute top-2 right-2 z-10 p-1 rounded-full text-gray-400 hover:text-gray-700"><X className="w-4 h-4" /></button>
+            <button type="button" onClick={() => setOpen(false)} aria-label={t('common.close')} className="absolute top-2 right-2 z-10 p-1 rounded-full text-gray-400 hover:text-gray-700"><X className="w-4 h-4" /></button>
             {data ? (
               <>
                 <PriorityBreakdown score={score} band={band} factors={data.factors} />
                 {data.ai?.reasoning && (
                   <p className="px-5 pb-3 text-xs text-gray-600">
-                    <span className="font-semibold text-gray-800">Severity read: </span>{data.ai.severity}/5. {data.ai.reasoning}
+                    <span className="font-semibold text-gray-800">{t('priority.severityRead')}: </span>{data.ai.severity}/5. {data.ai.reasoning}
                   </p>
                 )}
               </>
             ) : failed ? (
-              <p className="p-5 text-sm text-gray-500">Could not load the breakdown. Try again.</p>
+              <p className="p-5 text-sm text-gray-500">{t('priority.loadFail')}</p>
             ) : (
               <div className="flex justify-center p-8"><Loader2 className="w-5 h-5 animate-spin text-indigo-600" /></div>
             )}
             <div className="px-5 py-3 border-t border-gray-100 text-xs text-gray-500">
-              Same formula for every report, nobody sets scores by hand.{' '}
-              <Link href={`/issues/${uid}`} className="text-indigo-600 font-medium hover:underline">Open issue →</Link>
+              {t('priority.sameFormula')}{' '}
+              <Link href={`/issues/${uid}`} className="text-indigo-600 font-medium hover:underline">{t('priority.openIssue')}</Link>
             </div>
           </div>
         </div>,

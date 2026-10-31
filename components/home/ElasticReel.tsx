@@ -16,6 +16,7 @@ interface Props {
   barHeight?: number;  // slice height at rest, as a fraction of height
   sweep?: boolean;     // idle: glide a magnifying focus back and forth (off = slices rest until hovered)
   onOpenChange?: (index: number) => void; // -1 when closed
+  ariaLabel?: string;
 }
 
 // Exponential easing, no overshoot: slices glide to their size instead of springing.
@@ -27,7 +28,7 @@ const falloff = (d: number, influence: number) => (d >= influence ? 0 : (Math.co
  * A dock of photo slices. The slice under the pointer swells (and so do its neighbours);
  * click one to open the full photo while the others blur and dim. Keyboard: Tab to a slice, Enter opens, Esc closes.
  */
-export default function ElasticReel({ items, barWidth = 44, gap = 10, magnify = 2.4, lift = 1.15, influence = 200, radius = 12, height = 460, barHeight = 0.5, sweep = false, onOpenChange }: Props) {
+export default function ElasticReel({ items, barWidth = 44, gap = 10, magnify = 2.4, lift = 1.15, influence = 200, radius = 12, height = 460, barHeight = 0.5, sweep = false, onOpenChange, ariaLabel = 'Photos of common civic problems. Hover to magnify, click to open.' }: Props) {
   const root = useRef<HTMLDivElement>(null);
   const bars = useRef<(HTMLButtonElement | null)[]>([]);
   const state = useRef({ px: null as number | null, spx: null as number | null, hovering: false, open: -1, hoverIdx: -1 });
@@ -124,7 +125,7 @@ export default function ElasticReel({ items, barWidth = 44, gap = 10, magnify = 
       className="relative w-full select-none"
       style={{ height }}
       role="group"
-      aria-label="Photos of common civic problems. Hover to magnify, click to open."
+      aria-label={ariaLabel}
     >
       {/* The open photo and its caption */}
       <div

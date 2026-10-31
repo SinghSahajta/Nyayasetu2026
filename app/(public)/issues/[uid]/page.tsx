@@ -11,7 +11,8 @@ import CitizenFeedback from '@/components/complaints/CitizenFeedback';
 import AuditLog from '@/components/accountability/AuditLog';
 import RtiDraft from '@/components/accountability/RtiDraft';
 import PhoneVerifyFlow from '@/components/complaints/PhoneVerifyFlow';
-import { COMPLAINT_CATEGORIES } from '@/constants/categories';
+import { useTranslation } from 'react-i18next';
+import { categoryLabel } from '@/constants/categories';
 import type { Complaint, ComplaintStatus, ComplaintTimelineEntry } from '@/types';
 
 const IssuesMap = dynamic(() => import('@/components/map/IssuesMap'), {
@@ -19,11 +20,11 @@ const IssuesMap = dynamic(() => import('@/components/map/IssuesMap'), {
   loading: () => <div className="h-56 w-full rounded-xl bg-gray-100 animate-pulse" />,
 });
 
-const STEPS: { key: string; label: string; reached: string[] }[] = [
-  { key: 'submitted', label: 'Reported', reached: ['submitted', 'verified', 'assigned', 'in_progress', 'resolved', 'closed', 'escalated', 'reopened', 'transferred'] },
-  { key: 'assigned', label: 'Assigned', reached: ['assigned', 'in_progress', 'resolved', 'closed', 'escalated', 'reopened', 'transferred'] },
-  { key: 'in_progress', label: 'Work started', reached: ['in_progress', 'resolved', 'closed', 'escalated'] },
-  { key: 'resolved', label: 'Resolved', reached: ['resolved', 'closed'] },
+const STEPS: { key: string; reached: string[] }[] = [
+  { key: 'submitted', reached: ['submitted', 'verified', 'assigned', 'in_progress', 'resolved', 'closed', 'escalated', 'reopened', 'transferred'] },
+  { key: 'assigned', reached: ['assigned', 'in_progress', 'resolved', 'closed', 'escalated', 'reopened', 'transferred'] },
+  { key: 'in_progress', reached: ['in_progress', 'resolved', 'closed', 'escalated'] },
+  { key: 'resolved', reached: ['resolved', 'closed'] },
 ];
 
 interface TrackResponse {
@@ -34,6 +35,7 @@ interface TrackResponse {
 }
 
 export default function IssuePage({ params }: { params: { uid: string } }) {
+  const { t, i18n } = useTranslation();
   const [data, setData] = useState<TrackResponse | null>(null);
   const [error, setError] = useState('');
   const [confirming, setConfirming] = useState(false);
@@ -43,10 +45,10 @@ export default function IssuePage({ params }: { params: { uid: string } }) {
     const res = await fetch(`/api/complaints/track/${params.uid}`);
     const d = await res.json();
     if (d.success) setData(d);
-    else setError(d.message || 'Issue not found.');
-  }, [params.uid]);
+    else setError(d.message || t('detail.notFound'));
+  }, [params.uid, t]);
 
-  useEffect(() => { load().catch(() => setError('Network error. Please try again.')); }, [load]);
+  useEffect(() => { load().catch(() => setError(t('common.networkError'))); }, [load, t]);
 
   const confirm = useCallback(async (token: string) => {
     const res = await fetch(`/api/complaints/track/${params.uid}/confirm`, {
@@ -56,29 +58,29 @@ export default function IssuePage({ params }: { params: { uid: string } }) {
     });
     const d = await res.json();
     setConfirming(false);
-    setConfirmMsg(d.success ? `Thanks! ${d.confirmations === 1 ? '1 person has' : `${d.confirmations} people have`} now confirmed this issue.` : d.message);
+    setConfirmMsg(d.success ? t('detail.thanks', { count: d.confirmations }) : d.message);
     if (d.success) load();
-  }, [params.uid, load]);
+  }, [params.uid, load, t]);
 
   if (error) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-16 text-center">
         <p className="text-gray-700 mb-4">{error}</p>
-        <Link href="/issues" className="text-indigo-700 font-medium hover:underline">← Back to all issues</Link>
+        <Link href="/issues" className="text-indigo-700 font-medium hover:underline">{t('detail.backAll')}</Link>
       </div>
     );
   }
   if (!data) return <div className="flex justify-center py-24"><Loader2 className="w-8 h-8 animate-spin text-indigo-600" /></div>;
 
   const c = data.complaint;
-  const category = COMPLAINT_CATEGORIES.find((x) => x.value === c.category)?.label_en ?? c.category;
+  const category = categoryLabel(c.category, i18n.language);
   const done = c.status === 'resolved' || c.status === 'closed';
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-6xl mx-auto px-4 py-6">
         <Link href="/issues" className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-800 mb-4">
-          <ArrowLeft className="w-4 h-4" /> All issues
+          <ArrowLeft className="w-4 h-4" /> {t('detail.allIssues')}
         </Link>
 
         {/* Header */}
@@ -93,7 +95,7 @@ export default function IssuePage({ params }: { params: { uid: string } }) {
             </div>
             <div className="flex flex-col items-end gap-2">
               <PriorityBadge band={c.priority_band} score={c.priority_score} />
-              <span className="text-xs text-gray-500">{category}{c.city ? ` · ${c.city}` : ''}</span>
+              <span className="text-xs text-gray-500">{category}{c.city ? ` · ${t(`cities.${c.city}`, { defaultValue: c.city })}` : ''}</span>
             </div>
           </div>
 
@@ -104,14 +106,14 @@ export default function IssuePage({ params }: { params: { uid: string } }) {
               return (
                 <li key={s.key} className="flex flex-col items-center text-center">
                   {reached ? <CheckCircle2 className="w-6 h-6 text-green-600" /> : <Circle className="w-6 h-6 text-gray-300" />}
-                  <span className={`text-xs mt-1 font-medium ${reached ? 'text-gray-900' : 'text-gray-400'}`}>{s.label}</span>
+                  <span className={`text-xs mt-1 font-medium ${reached ? 'text-gray-900' : 'text-gray-400'}`}>{t(`detail.step.${s.key}`)}</span>
                 </li>
               );
             })}
           </ol>
           {c.is_escalated && !done && (
             <p className="mt-4 flex items-center gap-2 text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
-              <ShieldAlert className="w-4 h-4" /> Escalated to a supervisor because the resolution deadline passed.
+              <ShieldAlert className="w-4 h-4" /> {t('detail.escalatedNote')}
             </p>
           )}
         </div>
@@ -121,7 +123,7 @@ export default function IssuePage({ params }: { params: { uid: string } }) {
             <PriorityBreakdown score={c.priority_score} band={c.priority_band} factors={c.priority_breakdown ?? []} />
 
             <div className="bg-white rounded-xl border border-slate-200 p-5">
-              <h2 className="text-sm font-semibold text-gray-900 mb-2">What was reported</h2>
+              <h2 className="text-sm font-semibold text-gray-900 mb-2">{t('detail.whatReported')}</h2>
               <p className="text-sm text-gray-700 whitespace-pre-line">{c.description}</p>
               {c.ai_severity?.hazards?.length ? (
                 <div className="mt-3 flex flex-wrap gap-2">
@@ -135,24 +137,24 @@ export default function IssuePage({ params }: { params: { uid: string } }) {
                   {c.proof_image_urls?.[0] && (
                     <figure>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={c.proof_image_urls[0]} alt="Photo from the report" className="w-full h-44 object-cover rounded-lg border" />
-                      <figcaption className="text-xs text-gray-500 mt-1">Before (citizen photo)</figcaption>
+                      <img src={c.proof_image_urls[0]} alt={t('detail.photoAlt')} className="w-full h-44 object-cover rounded-lg border" />
+                      <figcaption className="text-xs text-gray-500 mt-1">{t('detail.before')}</figcaption>
                     </figure>
                   )}
                   {c.resolution_proof_url && (
                     <figure>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={c.resolution_proof_url} alt="Proof of the fix" className="w-full h-44 object-cover rounded-lg border" />
-                      <figcaption className="text-xs text-gray-500 mt-1">After (officer proof)</figcaption>
+                      <img src={c.resolution_proof_url} alt={t('detail.proofAlt')} className="w-full h-44 object-cover rounded-lg border" />
+                      <figcaption className="text-xs text-gray-500 mt-1">{t('detail.after')}</figcaption>
                     </figure>
                   )}
                 </div>
               )}
-              {c.resolution_notes && <p className="mt-3 text-sm text-green-800 bg-green-50 border border-green-200 rounded-lg px-3 py-2">Fix notes: {c.resolution_notes}</p>}
+              {c.resolution_notes && <p className="mt-3 text-sm text-green-800 bg-green-50 border border-green-200 rounded-lg px-3 py-2">{t('detail.fixNotes')}: {c.resolution_notes}</p>}
             </div>
 
             <div className="bg-white rounded-xl border border-slate-200 p-5">
-              <h2 className="text-sm font-semibold text-gray-900 mb-3">Timeline</h2>
+              <h2 className="text-sm font-semibold text-gray-900 mb-3">{t('detail.timeline')}</h2>
               <StatusTimeline updates={data.updates} currentStatus={c.status as ComplaintStatus} />
             </div>
 
@@ -172,23 +174,23 @@ export default function IssuePage({ params }: { params: { uid: string } }) {
             )}
             <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-3 text-sm">
               <SLACountdown sla_deadline={c.sla_deadline} status={c.status as ComplaintStatus} />
-              <p className="flex items-center gap-2 text-gray-700"><Building2 className="w-4 h-4 text-gray-400" /> {data.department_name ?? 'Department pending'}</p>
-              <p className="flex items-center gap-2 text-gray-700"><User className="w-4 h-4 text-gray-400" /> {data.officer_name ?? 'Officer not assigned yet'}</p>
-              <p className="flex items-center gap-2 text-gray-700"><ThumbsUp className="w-4 h-4 text-gray-400" /> {c.confirmations === 1 ? '1 person' : `${c.confirmations} people`} confirmed this</p>
+              <p className="flex items-center gap-2 text-gray-700"><Building2 className="w-4 h-4 text-gray-400" /> {data.department_name ? t(`deptNames.${data.department_name}`, { defaultValue: data.department_name }) : t('detail.deptPending')}</p>
+              <p className="flex items-center gap-2 text-gray-700"><User className="w-4 h-4 text-gray-400" /> {data.officer_name ?? t('detail.officerNone')}</p>
+              <p className="flex items-center gap-2 text-gray-700"><ThumbsUp className="w-4 h-4 text-gray-400" /> {t('detail.confirmed', { count: c.confirmations })}</p>
             </div>
 
             {!done && (c.is_escalated || new Date(c.sla_deadline) < new Date()) && <RtiDraft uid={c.uid} />}
 
             {!done && (
               <div className="bg-white rounded-xl border border-slate-200 p-5">
-                <h2 className="text-sm font-semibold text-gray-900">Seeing this problem too?</h2>
-                <p className="text-xs text-gray-500 mt-1 mb-3">Each verified confirmation raises the priority. One per phone number.</p>
+                <h2 className="text-sm font-semibold text-gray-900">{t('detail.seeingToo')}</h2>
+                <p className="text-xs text-gray-500 mt-1 mb-3">{t('detail.seeingTooBody')}</p>
                 {confirming ? (
                   <PhoneVerifyFlow onVerified={(token) => confirm(token)} />
                 ) : (
                   <button onClick={() => { setConfirming(true); setConfirmMsg(''); }}
                     className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-md bg-indigo-700 text-white font-medium hover:bg-indigo-800">
-                    <ThumbsUp className="w-4 h-4" /> I see this too
+                    <ThumbsUp className="w-4 h-4" /> {t('detail.iSeeToo')}
                   </button>
                 )}
                 {confirmMsg && <p className="text-sm text-gray-700 mt-3">{confirmMsg}</p>}

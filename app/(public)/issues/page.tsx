@@ -4,8 +4,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { Loader2, Plus, ThumbsUp, ShieldAlert } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { PriorityWhy, BAND_STYLE } from '@/components/priority/PriorityBreakdown';
-import { COMPLAINT_CATEGORIES } from '@/constants/categories';
+import { COMPLAINT_CATEGORIES, categoryLabel } from '@/constants/categories';
 import type { MapIssue } from '@/components/map/IssuesMap';
 import type { PriorityBand } from '@/types';
 import { distanceM } from '@/lib/priority';
@@ -29,9 +30,9 @@ const CITY_VIEWS: Record<string, { center: [number, number]; zoom: number; radiu
   Neemrana: { center: [27.97, 76.39], zoom: 13, radiusKm: 12 },
 };
 
-const label = (cat: string) => COMPLAINT_CATEGORIES.find((c) => c.value === cat)?.label_en ?? cat;
-
 export default function IssuesPage() {
+  const { t, i18n } = useTranslation();
+  const label = (cat: string) => categoryLabel(cat, i18n.language);
   const [issues, setIssues] = useState<Issue[] | null>(null);
   const [status, setStatus] = useState('open');
   const [category, setCategory] = useState('');
@@ -62,11 +63,11 @@ export default function IssuesPage() {
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 py-6 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Public issue tracker</h1>
-            <p className="text-sm text-gray-500 mt-1">Every reported issue, ranked by an explainable priority score. Open one to see why it ranks where it does.</p>
+            <h1 className="text-2xl font-bold text-gray-900">{t('issues.title')}</h1>
+            <p className="text-sm text-gray-500 mt-1">{t('issues.sub')}</p>
           </div>
           <Link href="/complaints/file" className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md bg-indigo-700 text-white font-medium hover:bg-indigo-800">
-            <Plus className="w-4 h-4" /> Report an issue
+            <Plus className="w-4 h-4" /> {t('issues.report')}
           </Link>
         </div>
       </div>
@@ -74,25 +75,25 @@ export default function IssuesPage() {
       <div className="max-w-7xl mx-auto px-4 py-6">
         {/* Filters: one row above the map */}
         <div className="flex flex-wrap gap-3 mb-4">
-          <select aria-label="Status" value={status} onChange={(e) => setStatus(e.target.value)} className="px-3 py-2 rounded-md border border-gray-300 bg-white text-sm">
-            <option value="open">Open issues</option>
-            <option value="resolved">Resolved</option>
-            <option value="all">All</option>
+          <select aria-label={t('issues.status')} value={status} onChange={(e) => setStatus(e.target.value)} className="px-3 py-2 rounded-md border border-gray-300 bg-white text-sm">
+            <option value="open">{t('issues.open')}</option>
+            <option value="resolved">{t('issues.resolved')}</option>
+            <option value="all">{t('issues.all')}</option>
           </select>
-          <select aria-label="Category" value={category} onChange={(e) => setCategory(e.target.value)} className="px-3 py-2 rounded-md border border-gray-300 bg-white text-sm">
-            <option value="">All categories</option>
-            {COMPLAINT_CATEGORIES.map((c) => <option key={c.value} value={c.value}>{c.label_en}</option>)}
+          <select aria-label={t('issues.catLabel')} value={category} onChange={(e) => setCategory(e.target.value)} className="px-3 py-2 rounded-md border border-gray-300 bg-white text-sm">
+            <option value="">{t('issues.allCats')}</option>
+            {COMPLAINT_CATEGORIES.map((c) => <option key={c.value} value={c.value}>{label(c.value)}</option>)}
           </select>
-          <select aria-label="Area" value={city} onChange={(e) => setCity(e.target.value)} className="px-3 py-2 rounded-md border border-gray-300 bg-white text-sm">
-            <option value="">All of India</option>
-            <option value="Delhi">Delhi</option>
-            <option value="Neemrana">Neemrana</option>
+          <select aria-label={t('issues.areaLabel')} value={city} onChange={(e) => setCity(e.target.value)} className="px-3 py-2 rounded-md border border-gray-300 bg-white text-sm">
+            <option value="">{t('issues.allIndia')}</option>
+            <option value="Delhi">{t('cities.Delhi')}</option>
+            <option value="Neemrana">{t('cities.Neemrana')}</option>
           </select>
           <div className="flex items-center gap-3 text-xs text-gray-600 ml-auto">
             {(Object.keys(BAND_STYLE) as PriorityBand[]).map((b) => (
               <span key={b} className="inline-flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-full" style={{ background: BAND_STYLE[b].hex }} aria-hidden />
-                {b} {BAND_STYLE[b].label} <span className="tabular-nums text-gray-400">{counts[b]}</span>
+                {b} {t(`priority.band.${b}`)} <span className="tabular-nums text-gray-400">{counts[b]}</span>
               </span>
             ))}
           </div>
@@ -107,7 +108,7 @@ export default function IssuesPage() {
               {issues === null ? (
                 <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin text-indigo-600" /></div>
               ) : shown.length === 0 ? (
-                <p className="text-sm text-gray-500 text-center py-16">No issues match these filters.</p>
+                <p className="text-sm text-gray-500 text-center py-16">{t('issues.none')}</p>
               ) : (
                 shown.map((i, idx) => (
                   <Link key={i.uid} href={`/issues/${i.uid}`} className="flex gap-3 p-3 hover:bg-gray-50">
@@ -119,10 +120,10 @@ export default function IssuesPage() {
                       </div>
                       <p className="text-xs text-gray-500 mt-0.5 flex items-center gap-2">
                         <span>{label(i.category)}</span>
-                        {i.city && <span>· {i.city}</span>}
-                        <span>· {i.status.replace('_', ' ')}</span>
+                        {i.city && <span>· {t(`cities.${i.city}`, { defaultValue: i.city })}</span>}
+                        <span>· {t(`status.${i.status}`, { defaultValue: i.status.replace('_', ' ') })}</span>
                         {i.confirmations > 0 && <span className="inline-flex items-center gap-0.5"><ThumbsUp className="w-3 h-3" />{i.confirmations}</span>}
-                        {i.is_escalated && <ShieldAlert className="w-3 h-3 text-red-600" aria-label="Escalated" />}
+                        {i.is_escalated && <ShieldAlert className="w-3 h-3 text-red-600" aria-label={t('issues.escalated')} />}
                       </p>
                     </div>
                   </Link>

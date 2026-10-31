@@ -21,3 +21,9 @@ export const COMPLAINT_CATEGORIES: {
   { value: ComplaintCategory.PARK_MAINTENANCE, label_en: 'Park Maintenance', label_hi: 'पार्क रखरखाव', sla_hours: SLA_HOURS[ComplaintCategory.PARK_MAINTENANCE] },
   { value: ComplaintCategory.ENCROACHMENT, label_en: 'Encroachment', label_hi: 'अतिक्रमण', sla_hours: SLA_HOURS[ComplaintCategory.ENCROACHMENT] },
 ];
+
+/** Category label in the visitor's language (falls back to the raw value for unknown categories). */
+export function categoryLabel(value: string, lang: string): string {
+  const c = COMPLAINT_CATEGORIES.find((x) => x.value === value);
+  return c ? (lang === 'hi' ? c.label_hi : c.label_en) : value;
+}
