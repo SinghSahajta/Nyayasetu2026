@@ -64,7 +64,7 @@ cp .env.local.example .env.local      # fill in the keys below
    npm run seed:schemes                  # the 30 welfare schemes
    npm run seed:demo -- --yes            # staff logins + 7 demo issues (WIPES existing complaints and users)
    ```
-   `--limit=N` seeds more issues (up to 44, about a second each for the OpenStreetMap lookups).
+   `--limit=N` seeds more issues (up to 43, about a second each for the OpenStreetMap lookups).
 3. **Start:** `npm run dev` → http://localhost:3000
 
 Demo logins (at `/login`): `officer@nyayasetu.in` / `Officer@123` (Roads) · `supervisor@nyayasetu.in` / `Super@123`.
@@ -90,7 +90,7 @@ Keys live only in `.env.local` (git-ignored). Set them again in your hosting pro
 
 ```bash
 npm test          # priority engine tests
-npm run test:e2e  # full flow against a running dev server; needs the fuller demo data: npm run seed:demo -- --yes --limit=44
+npm run test:e2e  # full flow against a running dev server; needs the fuller demo data: npm run seed:demo -- --yes --limit=43
 npx tsc --noEmit  # types
 npm run lint
 npm run build
