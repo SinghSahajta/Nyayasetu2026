@@ -23,13 +23,15 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ success: false, message: 'Failed to fetch overdue.' }, { status: 500 });
     }
 
-    // Officer and department names come joined in the same query.
+    // Officer and department names come joined in the same query. citizen_phone/reporter_device are dropped (officer-only).
+    /* eslint-disable @typescript-eslint/no-unused-vars */
     const enriched = (complaints || []).map(({ officer, department, citizen_phone, reporter_device, ...c }) => ({
       ...c,
       officer_name: (officer as { full_name: string } | null)?.full_name ?? null,
       department_name: (department as { name: string } | null)?.name ?? null,
       hours_overdue: Math.round((Date.now() - new Date(c.sla_deadline).getTime()) / 3_600_000),
     }));
+    /* eslint-enable @typescript-eslint/no-unused-vars */
 
     return NextResponse.json({ success: true, complaints: enriched });
   } catch (err) {
