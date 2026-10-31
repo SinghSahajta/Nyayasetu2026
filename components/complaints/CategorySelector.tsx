@@ -1,6 +1,8 @@
 'use client';
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { categoryLabel } from '@/constants/categories';
 import { ComplaintCategory } from '@/types';
 import {
   Trash2,
@@ -36,9 +38,10 @@ const CATEGORIES: { value: ComplaintCategory; label: string; icon: React.Element
 ];
 
 export default function CategorySelector({ selected, onSelect }: CategorySelectorProps) {
+  const { i18n } = useTranslation();
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-      {CATEGORIES.map(({ value, label, icon: Icon }) => {
+      {CATEGORIES.map(({ value, icon: Icon }) => {
         const isSelected = selected === value;
         return (
           <button
@@ -52,7 +55,7 @@ export default function CategorySelector({ selected, onSelect }: CategorySelecto
             }`}
           >
             <Icon className={`w-6 h-6 ${isSelected ? 'text-indigo-600' : 'text-gray-400'}`} />
-            <span className="text-xs font-medium leading-tight">{label}</span>
+            <span className="text-xs font-medium leading-tight">{categoryLabel(value, i18n.language)}</span>
           </button>
         );
       })}

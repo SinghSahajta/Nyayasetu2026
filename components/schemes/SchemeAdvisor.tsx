@@ -3,13 +3,14 @@
 import React, { useRef, useState } from 'react';
 import Link from 'next/link';
 import { Bot, Loader2, Send } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface Msg { role: 'user' | 'assistant'; content: string; schemes?: { id: string; title: string }[] }
 
-const EXAMPLES = ['I am a 20 year old student, what can I get?', 'मैं एक विधवा महिला हूँ, कौन सी योजना मिलेगी?', 'Schemes for a small shop owner'];
-
 /** Chat that answers from the schemes in our database and links to the ones it names. */
 export default function SchemeAdvisor() {
+  const { t } = useTranslation();
+  const examples = [t('advisor.ex1'), t('advisor.ex2'), t('advisor.ex3')];
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
@@ -25,9 +26,9 @@ export default function SchemeAdvisor() {
         body: JSON.stringify({ messages: next.map(({ role, content }) => ({ role, content })) }),
       });
       const d = await res.json();
-      setMsgs([...next, { role: 'assistant', content: d.success ? d.reply : d.message || 'Something went wrong.', schemes: d.schemes }]);
+      setMsgs([...next, { role: 'assistant', content: d.success ? d.reply : d.message || t('common.wentWrong'), schemes: d.schemes }]);
     } catch {
-      setMsgs([...next, { role: 'assistant', content: 'Something went wrong. Please try again.' }]);
+      setMsgs([...next, { role: 'assistant', content: t('common.wentWrong') }]);
     }
     setBusy(false);
     setTimeout(() => end.current?.scrollIntoView({ behavior: 'smooth' }), 50);
@@ -37,8 +38,8 @@ export default function SchemeAdvisor() {
     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm mb-8">
       <div className="flex items-center gap-2 px-5 py-3 border-b border-gray-100">
         <Bot className="w-5 h-5 text-indigo-600" />
-        <h2 className="text-sm font-semibold text-gray-900">Ask the scheme advisor</h2>
-        <span className="text-xs text-gray-500">Answers only from the schemes listed below, in Hindi or English.</span>
+        <h2 className="text-sm font-semibold text-gray-900">{t('advisor.title')}</h2>
+        <span className="text-xs text-gray-500">{t('advisor.sub')}</span>
       </div>
       {msgs.length > 0 && (
         <div className="px-5 py-4 space-y-3 max-h-80 overflow-y-auto">
@@ -61,14 +62,14 @@ export default function SchemeAdvisor() {
       <div className="px-5 py-3 border-t border-gray-100">
         {msgs.length === 0 && (
           <div className="flex flex-wrap gap-2 mb-3">
-            {EXAMPLES.map((e) => (
+            {examples.map((e) => (
               <button key={e} onClick={() => send(e)} className="text-xs px-3 py-1.5 rounded-full border border-gray-200 text-gray-600 hover:border-indigo-300 hover:text-indigo-600">{e}</button>
             ))}
           </div>
         )}
         <form onSubmit={(e) => { e.preventDefault(); send(input); }} className="flex gap-2">
-          <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Tell me about yourself, e.g. age, work, family..." className="flex-1 px-3 py-2 rounded-lg border border-gray-300 text-sm outline-none focus:border-indigo-500" />
-          <button type="submit" disabled={busy || !input.trim()} aria-label="Send" className="px-3 rounded-lg bg-indigo-700 text-white disabled:opacity-50"><Send className="w-4 h-4" /></button>
+          <input value={input} onChange={(e) => setInput(e.target.value)} placeholder={t('advisor.placeholder')} className="flex-1 px-3 py-2 rounded-lg border border-gray-300 text-sm outline-none focus:border-indigo-500" />
+          <button type="submit" disabled={busy || !input.trim()} aria-label={t('advisor.send')} className="px-3 rounded-lg bg-indigo-700 text-white disabled:opacity-50"><Send className="w-4 h-4" /></button>
         </form>
       </div>
     </div>

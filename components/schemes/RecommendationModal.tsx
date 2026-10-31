@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { X, Loader2, Sparkles, ArrowRight, ArrowLeft, CheckCircle } from 'lucide-react';
 import type { SchemeRecommendResult } from '@/types';
 import SchemeCard from '@/components/schemes/SchemeCard';
+import { useTranslation } from 'react-i18next';
 
 interface RecommendationModalProps {
   isOpen: boolean;
@@ -50,6 +51,7 @@ const SOCIAL_CATEGORY_OPTIONS = [
 const STEPS_ORDER: Step[] = ['age', 'gender', 'occupation', 'social_category', 'disability', 'results'];
 
 export default function RecommendationModal({ isOpen, onClose }: RecommendationModalProps) {
+  const { t } = useTranslation();
   const [step, setStep] = useState<Step>('age');
   const [ageGroup, setAgeGroup] = useState<string | null>(null);
   const [gender, setGender] = useState<string | null>(null);
@@ -112,6 +114,7 @@ export default function RecommendationModal({ isOpen, onClose }: RecommendationM
 
   function renderOptionGrid(
     options: { value: string; label: string }[],
+    prefix: string,
     selected: string | null,
     onSelect: (val: string) => void
   ) {
@@ -127,7 +130,7 @@ export default function RecommendationModal({ isOpen, onClose }: RecommendationM
                 : 'border-gray-200 hover:border-indigo-300 text-gray-700'
             }`}
           >
-            {opt.label}
+            {t(`reco.${prefix}.${opt.value}`, { defaultValue: opt.label })}
           </button>
         ))}
       </div>
@@ -144,7 +147,7 @@ export default function RecommendationModal({ isOpen, onClose }: RecommendationM
           <div className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-indigo-600" />
             <h2 className="text-lg font-semibold text-gray-900">
-              Find Schemes For You
+              {t('reco.title')}
             </h2>
           </div>
           <button onClick={resetAndClose} className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors">
@@ -166,7 +169,7 @@ export default function RecommendationModal({ isOpen, onClose }: RecommendationM
               ))}
             </div>
             <p className="text-xs text-gray-400 mt-2">
-              Step {currentIndex + 1} of {STEPS_ORDER.length - 1}
+              {t('reco.step', { n: currentIndex + 1, total: STEPS_ORDER.length - 1 })}
             </p>
           </div>
         )}
@@ -175,35 +178,35 @@ export default function RecommendationModal({ isOpen, onClose }: RecommendationM
         <div className="p-5">
           {step === 'age' && (
             <div>
-              <h3 className="text-base font-medium text-gray-900 mb-4">What is your age group?</h3>
-              {renderOptionGrid(AGE_OPTIONS, ageGroup, setAgeGroup)}
+              <h3 className="text-base font-medium text-gray-900 mb-4">{t('reco.q.age')}</h3>
+              {renderOptionGrid(AGE_OPTIONS, 'age', ageGroup, setAgeGroup)}
             </div>
           )}
 
           {step === 'gender' && (
             <div>
-              <h3 className="text-base font-medium text-gray-900 mb-4">What is your gender?</h3>
-              {renderOptionGrid(GENDER_OPTIONS, gender, setGender)}
+              <h3 className="text-base font-medium text-gray-900 mb-4">{t('reco.q.gender')}</h3>
+              {renderOptionGrid(GENDER_OPTIONS, 'g', gender, setGender)}
             </div>
           )}
 
           {step === 'occupation' && (
             <div>
-              <h3 className="text-base font-medium text-gray-900 mb-4">What is your occupation?</h3>
-              {renderOptionGrid(OCCUPATION_OPTIONS, occupation, setOccupation)}
+              <h3 className="text-base font-medium text-gray-900 mb-4">{t('reco.q.occupation')}</h3>
+              {renderOptionGrid(OCCUPATION_OPTIONS, 'o', occupation, setOccupation)}
             </div>
           )}
 
           {step === 'social_category' && (
             <div>
-              <h3 className="text-base font-medium text-gray-900 mb-4">What is your social category?</h3>
-              {renderOptionGrid(SOCIAL_CATEGORY_OPTIONS, socialCategory, setSocialCategory)}
+              <h3 className="text-base font-medium text-gray-900 mb-4">{t('reco.q.social')}</h3>
+              {renderOptionGrid(SOCIAL_CATEGORY_OPTIONS, 's', socialCategory, setSocialCategory)}
             </div>
           )}
 
           {step === 'disability' && (
             <div>
-              <h3 className="text-base font-medium text-gray-900 mb-4">Do you have a disability (40%+)?</h3>
+              <h3 className="text-base font-medium text-gray-900 mb-4">{t('reco.q.disability')}</h3>
               <div className="grid grid-cols-2 gap-3">
                 <button
                   onClick={() => setHasDisability(true)}
@@ -213,7 +216,7 @@ export default function RecommendationModal({ isOpen, onClose }: RecommendationM
                       : 'border-gray-200 hover:border-indigo-300 text-gray-700'
                   }`}
                 >
-                  Yes
+                  {t('reco.yes')}
                 </button>
                 <button
                   onClick={() => setHasDisability(false)}
@@ -223,7 +226,7 @@ export default function RecommendationModal({ isOpen, onClose }: RecommendationM
                       : 'border-gray-200 hover:border-indigo-300 text-gray-700'
                   }`}
                 >
-                  No
+                  {t('reco.no')}
                 </button>
               </div>
             </div>
@@ -234,14 +237,14 @@ export default function RecommendationModal({ isOpen, onClose }: RecommendationM
               {loading ? (
                 <div className="flex flex-col items-center justify-center py-12">
                   <Loader2 className="w-10 h-10 text-indigo-600 animate-spin mb-3" />
-                  <p className="text-sm text-gray-500">Finding the best schemes for you...</p>
+                  <p className="text-sm text-gray-500">{t('reco.finding')}</p>
                 </div>
               ) : results.length > 0 ? (
                 <div>
                   <div className="flex items-center gap-2 mb-4">
                     <CheckCircle className="w-5 h-5 text-green-600" />
                     <h3 className="text-base font-medium text-gray-900">
-                      {results.length} scheme{results.length > 1 ? 's' : ''} recommended for you
+                      {t('reco.count', { count: results.length })}
                     </h3>
                   </div>
                   <div className="space-y-4">
@@ -261,7 +264,7 @@ export default function RecommendationModal({ isOpen, onClose }: RecommendationM
                 </div>
               ) : (
                 <div className="text-center py-12">
-                  <p className="text-gray-500">No matching schemes found. Try adjusting your profile.</p>
+                  <p className="text-gray-500">{t('reco.none')}</p>
                 </div>
               )}
             </div>
@@ -277,14 +280,14 @@ export default function RecommendationModal({ isOpen, onClose }: RecommendationM
               className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700
                 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
             >
-              <ArrowLeft className="w-4 h-4" /> Back
+              <ArrowLeft className="w-4 h-4" /> {t('reco.back')}
             </button>
             <button
               onClick={goNext}
               className="flex items-center gap-2 px-5 py-2.5 rounded-lg
                 bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors"
             >
-              {currentIndex === STEPS_ORDER.length - 2 ? 'Get Recommendations' : 'Next'}
+              {currentIndex === STEPS_ORDER.length - 2 ? t('reco.get') : t('reco.next')}
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
@@ -297,7 +300,7 @@ export default function RecommendationModal({ isOpen, onClose }: RecommendationM
               className="w-full px-4 py-2.5 rounded-lg bg-gray-100 text-gray-700 text-sm
                 font-medium hover:bg-gray-200 transition-colors"
             >
-              Close
+              {t('reco.close')}
             </button>
           </div>
         )}

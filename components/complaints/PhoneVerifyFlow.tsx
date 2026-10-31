@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Phone, CheckCircle, ArrowRight, RefreshCw, Loader2 } from 'lucide-react';
 type VerifyStep = 'phone' | 'otp' | 'verified';
 
@@ -15,6 +16,7 @@ interface PhoneVerifyFlowProps {
  * Step 3: Verified → Green tick → Proceed button
  */
 export default function PhoneVerifyFlow({ onVerified }: PhoneVerifyFlowProps) {
+  const { t } = useTranslation();
   const [step, setStep] = useState<VerifyStep>('phone');
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('');
@@ -36,7 +38,7 @@ export default function PhoneVerifyFlow({ onVerified }: PhoneVerifyFlowProps) {
     const phoneClean = phone.replace(/\s+/g, '');
 
     if (!/^[6-9]\d{9}$/.test(phoneClean)) {
-      setError('Enter a valid 10-digit Indian mobile number (starts with 6, 7, 8 or 9).');
+      setError(t('otp.errPhone'));
       return;
     }
 
@@ -69,7 +71,7 @@ export default function PhoneVerifyFlow({ onVerified }: PhoneVerifyFlowProps) {
     setError('');
 
     if (otp.length !== 6) {
-      setError('Please enter all 6 digits.');
+      setError(t('otp.errSix'));
       return;
     }
 
@@ -87,7 +89,7 @@ export default function PhoneVerifyFlow({ onVerified }: PhoneVerifyFlowProps) {
         setSessionToken(data.session_token);
         setStep('verified');
       } else {
-        setError('Invalid or expired OTP. Please try again.');
+        setError(t('otp.errBad'));
       }
     } catch {
       setError('Network error. Please try again.');
@@ -117,16 +119,16 @@ export default function PhoneVerifyFlow({ onVerified }: PhoneVerifyFlowProps) {
               <Phone className="w-8 h-8 text-indigo-600" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900">
-              Verify Your Phone
+              {t('otp.title')}
             </h3>
             <p className="text-sm text-gray-500 mt-1">
-              We&apos;ll send a 6-digit OTP to verify your number
+              {t('otp.sub')}
             </p>
           </div>
 
           <div>
             <label htmlFor="phone-input" className="block text-sm font-medium text-gray-700 mb-1">
-              Phone Number
+              {t('otp.phoneLabel')}
             </label>
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-500 bg-gray-100 px-3 py-2.5 rounded-lg border border-gray-300">
@@ -143,7 +145,7 @@ export default function PhoneVerifyFlow({ onVerified }: PhoneVerifyFlowProps) {
                   setPhone(val);
                   setError('');
                 }}
-                placeholder="Enter 10-digit number"
+                placeholder={t('otp.phonePh')}
                 className="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 outline-none
                   focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all
                   text-gray-900 placeholder-gray-400"
@@ -166,7 +168,7 @@ export default function PhoneVerifyFlow({ onVerified }: PhoneVerifyFlowProps) {
               <Loader2 className="w-5 h-5 animate-spin" />
             ) : (
               <>
-                Send OTP
+                {t('otp.send')}
                 <ArrowRight className="w-4 h-4" />
               </>
             )}
@@ -179,16 +181,16 @@ export default function PhoneVerifyFlow({ onVerified }: PhoneVerifyFlowProps) {
         <div className="space-y-4">
           <div className="text-center mb-6">
             <h3 className="text-lg font-semibold text-gray-900">
-              Enter OTP
+              {t('otp.enter')}
             </h3>
             <p className="text-sm text-gray-500 mt-1">
-              {demoOtp ? `Demo mode: no SMS is sent to +91 ${phone}` : `We sent a 6-digit code to +91 ${phone}`}
+              {demoOtp ? t('otp.demo', { phone }) : t('otp.sentTo', { phone })}
             </p>
           </div>
 
           {demoOtp && (
             <p className="text-sm text-center text-amber-900 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
-              Your code is <span className="font-mono font-bold tracking-widest">{demoOtp}</span> (filled in for you). Press Verify.
+              {t('otp.yourCode')} <span className="font-mono font-bold tracking-widest">{demoOtp}</span> {t('otp.filled')}
             </p>
           )}
 
@@ -207,7 +209,7 @@ export default function PhoneVerifyFlow({ onVerified }: PhoneVerifyFlowProps) {
               rounded-lg border-2 border-gray-300 focus:border-indigo-500 focus:ring-2 
               focus:ring-indigo-200 outline-none tracking-[0.5em] bg-white placeholder-gray-300"
             placeholder="••••••"
-            aria-label="OTP code"
+            aria-label={t('otp.aria')}
           />
 
           {error && (
@@ -224,7 +226,7 @@ export default function PhoneVerifyFlow({ onVerified }: PhoneVerifyFlowProps) {
             {loading ? (
               <Loader2 className="w-5 h-5 animate-spin" />
             ) : (
-              'Verify'
+              t('otp.verify')
             )}
           </button>
 
@@ -237,8 +239,8 @@ export default function PhoneVerifyFlow({ onVerified }: PhoneVerifyFlowProps) {
             >
               <RefreshCw className="w-3.5 h-3.5" />
               {resendCooldown > 0
-                ? `Resend OTP in ${resendCooldown}s`
-                : 'Resend OTP'
+                ? t('otp.resendIn', { s: resendCooldown })
+                : t('otp.resend')
               }
             </button>
           </div>
@@ -247,7 +249,7 @@ export default function PhoneVerifyFlow({ onVerified }: PhoneVerifyFlowProps) {
             onClick={() => { setStep('phone'); setOtp(''); setError(''); }}
             className="w-full text-sm text-gray-500 hover:text-gray-700 transition-colors"
           >
-            ← Change phone number
+            {t('otp.change')}
           </button>
         </div>
       )}
@@ -261,10 +263,10 @@ export default function PhoneVerifyFlow({ onVerified }: PhoneVerifyFlowProps) {
 
           <div>
             <h3 className="text-lg font-semibold text-green-800">
-              Phone Verified!
+              {t('otp.verified')}
             </h3>
             <p className="text-sm text-gray-500 mt-1">
-              +91 {phone} has been verified successfully
+              {t('otp.verifiedSub', { phone })}
             </p>
           </div>
 
@@ -273,7 +275,7 @@ export default function PhoneVerifyFlow({ onVerified }: PhoneVerifyFlowProps) {
             className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg
               bg-green-600 text-white font-medium hover:bg-green-700 transition-all"
           >
-            Proceed
+            {t('otp.proceed')}
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>

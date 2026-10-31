@@ -3,6 +3,7 @@
 import React from 'react';
 import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from 'react-leaflet';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import 'leaflet/dist/leaflet.css';
 import { BAND_STYLE } from '@/components/priority/PriorityBreakdown';
 import type { PriorityBand } from '@/types';
@@ -37,6 +38,7 @@ export default function IssuesMap({ issues, center, zoom = 5, height = 'h-[520px
   zoom?: number;
   height?: string;
 }) {
+  const { t } = useTranslation();
   return (
     <MapContainer center={center ?? [23.5, 78.5]} zoom={zoom} className={`${height} w-full rounded-xl border border-slate-200 z-0`} scrollWheelZoom={false}>
       <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
@@ -54,8 +56,8 @@ export default function IssuesMap({ issues, center, zoom = 5, height = 'h-[520px
             <Popup>
               <div className="text-sm">
                 <p className="font-semibold">{i.title}</p>
-                <p className="text-gray-600">{i.priority_band} · score {i.priority_score} · {i.status.replace('_', ' ')}</p>
-                <a href={`/issues/${i.uid}`} className="text-indigo-700 underline">Open tracker →</a>
+                <p className="text-gray-600">{i.priority_band} · {t('map.score')} {i.priority_score} · {t(`status.${i.status}`, { defaultValue: i.status.replace('_', ' ') })}</p>
+                <a href={`/issues/${i.uid}`} className="text-indigo-700 underline">{t('map.openTracker')}</a>
               </div>
             </Popup>
           </CircleMarker>

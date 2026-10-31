@@ -276,7 +276,9 @@
     "quickInfo": "Quick Info",
     "tags": "Tags",
     "targetGroups": "Target Groups",
-    "year": "year"
+    "year": "year",
+    "loadFail": "Failed to load scheme details.",
+    "notFoundMsg": "Scheme not found."
   },
   "common": {
     "close": "Close",
@@ -543,9 +545,156 @@
     "trackTitle": "Track Your Complaint",
     "urgency": "Urgency",
     "ward": "Ward",
-    "yourName": "Your Name"
+    "yourName": "Your Name",
+    "step1": "Verify Phone",
+    "step2": "Details",
+    "step3": "Review",
+    "step4": "Success",
+    "status": {
+      "submitted": "Complaint Submitted",
+      "verified": "Verified",
+      "assigned": "Assigned to Officer",
+      "in_progress": "In Progress",
+      "resolved": "Resolved",
+      "closed": "Closed",
+      "escalated": "Escalated",
+      "reopened": "Reopened",
+      "transferred": "Transferred"
+    }
   },
   "generic": {
     "optional": "optional"
+  },
+  "urgency": {
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low"
+  },
+  "otp": {
+    "title": "Verify Your Phone",
+    "sub": "We'll send a 6-digit OTP to verify your number",
+    "phoneLabel": "Phone Number",
+    "phonePh": "Enter 10-digit number",
+    "send": "Send OTP",
+    "enter": "Enter OTP",
+    "demo": "Demo mode: no SMS is sent to +91 {{phone}}",
+    "sentTo": "We sent a 6-digit code to +91 {{phone}}",
+    "yourCode": "Your code is",
+    "filled": "(filled in for you). Press Verify.",
+    "verify": "Verify",
+    "resendIn": "Resend OTP in {{s}}s",
+    "resend": "Resend OTP",
+    "change": "← Change phone number",
+    "verified": "Phone Verified!",
+    "verifiedSub": "+91 {{phone}} has been verified successfully",
+    "proceed": "Proceed",
+    "aria": "OTP code",
+    "errPhone": "Enter a valid 10-digit Indian mobile number (starts with 6, 7, 8 or 9).",
+    "errSix": "Please enter all 6 digits.",
+    "errBad": "Invalid or expired OTP. Please try again."
+  },
+  "file": {
+    "namePh": "Enter your full name",
+    "titlePh": "e.g. Broken streetlight near my house",
+    "descPh": "Describe the issue in detail — what, where, since when, how it affects you...",
+    "location": "Location",
+    "useMyLocation": "Use my location",
+    "pinnedAt": "Pinned at {{lat}}, {{lng}}. Drag the pin to adjust.",
+    "tapMap": "Tap the map or use your location. Anywhere in India.",
+    "privacy": "Your privacy: the public map shows only an approximate spot (about 200 m) and hides house numbers. Your name and phone are never shown. Only the assigned officer sees the exact pin. Please don't put personal details in the description.",
+    "outsideIndia": "NyayaSetu only works inside India. Please pick a location within India.",
+    "noGeo": "Your browser cannot share location. Tap the map instead.",
+    "geoDenied": "Location permission denied. Tap the map to place the pin.",
+    "sameIssue_one": "Is this the same issue? {{count}} similar report is already open nearby:",
+    "sameIssue_other": "Is this the same issue? {{count}} similar reports are already open nearby:",
+    "away": "{{m}} m away",
+    "seeToo": "I see this too →",
+    "confirmHint": "Confirming an existing report raises its priority faster than filing a duplicate. Different problem? Just continue.",
+    "photo": "Photo",
+    "photoOpt": "(optional, helps the AI judge severity)",
+    "photoPreviewAlt": "Issue photo preview",
+    "photoRemove": "Remove photo",
+    "addressHint": "(filled from the map, edit if needed)",
+    "addressPh": "Full address of the issue location",
+    "landmarkPh": "Nearest landmark",
+    "wardPh": "e.g. Ward 42",
+    "mapPin": "Map pin",
+    "photoAlt": "Issue photo",
+    "nameReq": "Name is required.",
+    "titleReq": "Complaint title is required.",
+    "catReq": "Please select a category.",
+    "descReq": "Description is required.",
+    "descMin": "Description must be at least 30 characters.",
+    "pinReq": "Pin the issue on the map.",
+    "photoErr": "Could not read that image."
+  },
+  "reco": {
+    "q": {
+      "age": "What is your age group?",
+      "gender": "What is your gender?",
+      "occupation": "What is your occupation?",
+      "social": "What is your social category?",
+      "disability": "Do you have a disability (40%+)?"
+    },
+    "finding": "Finding the best schemes for you...",
+    "none": "No matching schemes found. Try adjusting your profile.",
+    "next": "Next",
+    "get": "Get Recommendations",
+    "age": {
+      "below_18": "Below 18",
+      "18_25": "18–25 years",
+      "26_35": "26–35 years",
+      "36_45": "36–45 years",
+      "46_59": "46–59 years",
+      "60_plus": "60+ years"
+    },
+    "g": {
+      "male": "Male",
+      "female": "Female",
+      "other": "Other"
+    },
+    "o": {
+      "student": "Student",
+      "farmer": "Farmer",
+      "self_employed": "Self Employed / Business",
+      "labour": "Construction / Labour",
+      "salaried": "Salaried Employee",
+      "homemaker": "Homemaker",
+      "unemployed": "Unemployed",
+      "retired": "Retired"
+    },
+    "s": {
+      "general": "General",
+      "obc": "OBC",
+      "sc": "SC",
+      "st": "ST",
+      "ews": "EWS"
+    },
+    "title": "Find Schemes For You",
+    "yes": "Yes",
+    "no": "No",
+    "step": "Step {{n}} of {{total}}",
+    "back": "Back",
+    "close": "Close",
+    "count_one": "{{count}} scheme recommended for you",
+    "count_other": "{{count}} schemes recommended for you"
+  },
+  "login": {
+    "errEmail": "Please enter your email address.",
+    "errPassword": "Please enter your password.",
+    "passwordPh": "Enter your password",
+    "noLogin": "Citizens don't need login"
+  },
+  "map": {
+    "openTracker": "Open tracker →",
+    "score": "score"
+  },
+  "tnote": {
+    "reported": "Issue reported by a citizen.",
+    "assigned": "Assigned to an officer.",
+    "transferred": "Complaint transferred to a different department for resolution.",
+    "newOfficer": "New officer assigned to your complaint.",
+    "escalated": "Your complaint has been escalated for priority resolution.",
+    "escalatedSla": "Your complaint has been escalated for priority resolution due to SLA breach."
   }
 }

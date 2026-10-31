@@ -24,6 +24,16 @@ const STATUS_LABELS: Record<string, string> = {
   transferred: 'Transferred',
 };
 
+// Notes the system itself writes (English, stored in the database); anything else is shown as written.
+const NOTE_KEYS: Record<string, string> = {
+  'Issue reported by a citizen.': 'tnote.reported',
+  'Assigned to an officer.': 'tnote.assigned',
+  'Complaint transferred to a different department for resolution.': 'tnote.transferred',
+  'New officer assigned to your complaint.': 'tnote.newOfficer',
+  'Your complaint has been escalated for priority resolution.': 'tnote.escalated',
+  'Your complaint has been escalated for priority resolution due to SLA breach.': 'tnote.escalatedSla',
+};
+
 function formatTimelineDate(dateStr: string, lang: string): string {
   const d = new Date(dateStr);
   return d.toLocaleString(lang === 'hi' ? 'hi-IN' : 'en-IN', {
@@ -99,7 +109,7 @@ export default function StatusTimeline({ updates, currentStatus }: StatusTimelin
               </p>
               {entry.public_note && (
                 <p className="text-sm text-gray-600 mt-1 bg-gray-50 rounded-lg p-2.5 border border-gray-100">
-                  {entry.public_note}
+                  {NOTE_KEYS[entry.public_note] ? t(NOTE_KEYS[entry.public_note]) : entry.public_note}
                 </p>
               )}
             </div>

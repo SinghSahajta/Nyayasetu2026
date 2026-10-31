@@ -47,10 +47,10 @@ export default function SchemeDetailPage() {
         if (data.success) {
           setScheme(data.scheme);
         } else {
-          setError('Scheme not found.');
+          setError(t('schemes.notFoundMsg'));
         }
       } catch {
-        setError('Failed to load scheme details.');
+        setError(t('schemes.loadFail'));
       } finally {
         setLoading(false);
       }
