@@ -290,13 +290,6 @@ html:not(.dark) .cursor-glow {
   display: block; position: fixed; inset: 0; z-index: 1500; pointer-events: none; mix-blend-mode: multiply;
   background: radial-gradient(460px circle at var(--mx, 50%) var(--my, -30%), rgba(15, 55, 70, .085), transparent 65%);
 }
-/* A faint paper grain on the smoke background. */
-html:not(.dark) .hero-smoke {
-  background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .05 0 0 0 0 .3 0 0 0 0 .35 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-    radial-gradient(60% 45% at calc(18% + var(--px, 0) * 7%) calc(22% + var(--py, 0) * 9%), rgba(14, 101, 119, .12), transparent 70%),
-    radial-gradient(55% 45% at calc(82% + var(--px, 0) * -7%) calc(68% + var(--py, 0) * -9%), rgba(120, 140, 150, .20), transparent 70%);
-}
 html:not(.dark) .bg-white.rounded-xl:not(.glow-card), html:not(.dark) .bg-white.rounded-2xl:not(.glow-card) {
   background-image: radial-gradient(260px circle at var(--x, -200px) var(--y, -200px), rgba(14, 101, 119, .10), transparent 70%);
   border-color: rgba(14, 101, 119, .18);
@@ -310,5 +303,31 @@ html:not(.dark) .bg-white.rounded-xl:not(.glow-card):hover, html:not(.dark) .bg-
 
 
 /* Home hero: the reel sits behind the headline, a veil keeps the text legible. */
-.hero-veil { background: radial-gradient(ellipse 46% 40% at 50% 50%, rgba(241, 245, 246, .84), rgba(241, 245, 246, .5) 62%, rgba(241, 245, 246, .1)); }
+.hero-veil { background: radial-gradient(ellipse 46% 40% at 50% 50%, rgba(245, 239, 225, .84), rgba(245, 239, 225, .5) 62%, rgba(245, 239, 225, .1)); }
 .dark .hero-veil { background: radial-gradient(ellipse 46% 40% at 50% 50%, rgba(14, 26, 32, .86), rgba(14, 26, 32, .52) 62%, rgba(14, 26, 32, .12)); }
+
+/* ---- Light mode background: almond-milk surface ----
+   Procedural and seamless (SVG fractal noise mapped to #E8DCC4 / #EDE4D0 / #F5EFE1, plus a very fine grain).
+   One fixed layer behind the page that drifts very slowly; page-wide sections are transparent so it shows. */
+html:not(.dark) body::before {
+  content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background-color: #f5efe1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45  0 0 0 0 .38  0 0 0 0 .28  0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='800'%3E%3Cfilter id='a' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.0035 0.006' numOctaves='3' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='.8 .8 .8 0 -.7  .8 .8 .8 0 -.7  .8 .8 .8 0 -.7  0 0 0 0 1'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='table' tableValues='.910 .929 .961'/%3E%3CfeFuncG type='table' tableValues='.863 .894 .937'/%3E%3CfeFuncB type='table' tableValues='.769 .816 .882'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23a%29'/%3E%3C/svg%3E");
+  background-size: 160px 160px, 800px 800px;
+  animation: almond-drift 240s linear infinite;
+}
+@keyframes almond-drift { to { background-position: 160px 80px, 800px 400px; } }
+@media (prefers-reduced-motion: reduce) { html:not(.dark) body::before { animation: none; } }
+
+html:not(.dark) .hero-smoke,
+html:not(.dark) section.bg-white,
+html:not(.dark) section.bg-gray-50,
+html:not(.dark) .min-h-screen.bg-gray-50,
+html:not(.dark) .min-h-screen.bg-white {
+  background-color: transparent;
+}
+html:not(.dark) .hero-smoke {
+  background-image:
+    radial-gradient(60% 45% at calc(18% + var(--px, 0) * 7%) calc(22% + var(--py, 0) * 9%), rgba(14, 101, 119, .07), transparent 70%),
+    radial-gradient(55% 45% at calc(82% + var(--px, 0) * -7%) calc(68% + var(--py, 0) * -9%), rgba(160, 125, 70, .12), transparent 70%);
+}
