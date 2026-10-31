@@ -37,14 +37,14 @@ confirmation, on status changes, and by the cron job (time pressure grows on its
 Needs Node 20+ and a Supabase project (the free tier is fine).
 
 ```bash
-git clone https://github.com/Aarav241020/Nyayasetu && cd Nyayasetu
+git clone https://github.com/SinghSahajta/Nyayasetu2026 && cd Nyayasetu2026
 npm install
 cp .env.local.example .env.local      # fill in Supabase keys (+ optional GROQ_API_KEY)
 ```
 
-1. **Database:** paste `supabase/migrations/0001_init.sql` into Supabase → SQL Editor → Run.
+1. **Database:** in Supabase → SQL Editor, run the files in `supabase/migrations/` in order: `0001_init`, `0002_schemes`, `0003_audit_chain`, `0004_anonymous_citizens`, `0005_lock_down_rls`.
    (Or with the Supabase CLI: `npx supabase link` then `npx supabase db push`.)
-2. **Demo data:** `npm run seed:demo -- --yes` (wipes and recreates ~45 issues in Delhi and Neemrana).
+2. **Data:** `npm run seed:schemes` loads the 30 welfare schemes. `npm run seed:demo -- --yes` wipes and recreates demo issues.
 3. **Start:** `npm run dev` → http://localhost:3000
 
 Demo logins (at `/login`): `officer@nyayasetu.in` / `Officer@123` (Roads) · `supervisor@nyayasetu.in` / `Super@123`.
