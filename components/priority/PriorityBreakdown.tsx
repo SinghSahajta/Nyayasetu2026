@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { localizeReason } from '@/lib/reasons';
-import { AlertTriangle, MapPin, Users, Clock, CloudRain, Info, Loader2, X } from 'lucide-react';
+import { AlertTriangle, MapPin, Users, Clock, CloudRain, Info, Loader2, X, ChevronDown } from 'lucide-react';
 import type { AISeverity, PriorityBand, PriorityFactor } from '@/types';
 
 // Band colours follow the status palette; the label always travels with the colour.
@@ -36,41 +36,55 @@ export function PriorityBadge({ band, score }: { band: PriorityBand; score?: num
   );
 }
 
-/** Score + one bar per factor with the reason behind its points. */
-export default function PriorityBreakdown({ score, band, factors }: { score: number; band: PriorityBand; factors: PriorityFactor[] }) {
+/** Score + one bar per factor with the reason behind its points. `collapsible` hides the factors behind a dropdown. */
+export default function PriorityBreakdown({ score, band, factors, collapsible = false }: { score: number; band: PriorityBand; factors: PriorityFactor[]; collapsible?: boolean }) {
   const { t, i18n } = useTranslation();
+  const [open, setOpen] = useState(!collapsible);
   const s = BAND_STYLE[band] ?? BAND_STYLE.P4;
-  return (
-    <div className="bg-white rounded-xl border border-slate-200 p-5">
-      <div className="flex items-center justify-between gap-4 mb-4">
-        <div>
-          <h3 className="text-sm font-semibold text-gray-900">{t('priority.why')}</h3>
-          <p className="text-xs text-gray-500">{t('priority.intro')}</p>
-        </div>
+  const head = (
+    <>
+      <div className="text-left">
+        <h3 className="text-sm font-semibold text-gray-900">{t('priority.why')}</h3>
+        <p className="text-xs text-gray-500">{t('priority.intro')}</p>
+      </div>
+      <div className="flex items-center gap-3">
         <div className="text-right">
           <div className="text-3xl font-bold text-gray-900 leading-none">{score}<span className="text-sm text-gray-400 font-normal">/100</span></div>
           <div className="mt-1"><PriorityBadge band={band} /></div>
         </div>
+        {collapsible && <ChevronDown className={`w-5 h-5 text-gray-400 shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} aria-hidden />}
       </div>
-      <ul className="space-y-3">
-        {factors.map((f) => {
-          const Icon = ICONS[f.key] ?? AlertTriangle;
-          return (
-            <li key={f.key}>
-              <div className="flex items-center justify-between text-sm">
-                <span className="flex items-center gap-2 font-medium text-gray-800">
-                  <Icon className="w-4 h-4 text-gray-400" aria-hidden /> {t(`priority.factor.${f.key}`, { defaultValue: f.label })}
-                </span>
-                <span className="tabular-nums text-gray-600">+{f.points} <span className="text-gray-400">/ {f.max}</span></span>
-              </div>
-              <div className="mt-1 h-1.5 rounded-full bg-gray-100 overflow-hidden" role="presentation">
-                <div className="h-full rounded-full" style={{ width: `${(f.points / f.max) * 100}%`, background: s.hex }} />
-              </div>
-              <p className="text-xs text-gray-500 mt-1">{localizeReason(f.reason, i18n.language)}</p>
-            </li>
-          );
-        })}
-      </ul>
+    </>
+  );
+  return (
+    <div className="bg-white rounded-xl border border-slate-200 p-5">
+      {collapsible ? (
+        <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open}
+          className="w-full flex items-center justify-between gap-4">{head}</button>
+      ) : (
+        <div className="flex items-center justify-between gap-4">{head}</div>
+      )}
+      {open && (
+        <ul className="space-y-3 mt-4">
+          {factors.map((f) => {
+            const Icon = ICONS[f.key] ?? AlertTriangle;
+            return (
+              <li key={f.key}>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="flex items-center gap-2 font-medium text-gray-800">
+                    <Icon className="w-4 h-4 text-gray-400" aria-hidden /> {t(`priority.factor.${f.key}`, { defaultValue: f.label })}
+                  </span>
+                  <span className="tabular-nums text-gray-600">+{f.points} <span className="text-gray-400">/ {f.max}</span></span>
+                </div>
+                <div className="mt-1 h-1.5 rounded-full bg-gray-100 overflow-hidden" role="presentation">
+                  <div className="h-full rounded-full" style={{ width: `${(f.points / f.max) * 100}%`, background: s.hex }} />
+                </div>
+                <p className="text-xs text-gray-500 mt-1">{localizeReason(f.reason, i18n.language)}</p>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 }

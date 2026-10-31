@@ -118,7 +118,7 @@ export default function IssuePage({ params }: { params: { uid: string } }) {
 
         <div className="grid lg:grid-cols-3 gap-5 [&>*]:min-w-0">
           <div className="lg:col-span-2 space-y-5">
-            <PriorityBreakdown score={c.priority_score} band={c.priority_band} factors={c.priority_breakdown ?? []} />
+            <PriorityBreakdown score={c.priority_score} band={c.priority_band} factors={c.priority_breakdown ?? []} collapsible />
 
             <div className="bg-white rounded-xl border border-slate-200 p-5">
               <h2 className="text-sm font-semibold text-gray-900 mb-2">{t('detail.whatReported')}</h2>
