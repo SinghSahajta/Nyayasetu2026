@@ -51,13 +51,12 @@ export default function LandingPage() {
     fetch('/api/issues?status=open').then((r) => r.json()).then((d) => setTop((d.issues ?? []).slice(0, 5))).catch(() => {});
   }, []);
 
-  // The hero is exactly one screen tall; the reel behind it fills it. No dot texture on this page.
+  // The hero is exactly one screen tall; the reel behind it fills it.
   useEffect(() => {
     const size = () => setReelH(window.innerHeight - 72);
     size();
     window.addEventListener('resize', size);
-    document.documentElement.dataset.noDots = '1';
-    return () => { window.removeEventListener('resize', size); delete document.documentElement.dataset.noDots; };
+    return () => window.removeEventListener('resize', size);
   }, []);
 
   // The pinned headline fades out as the list slides up behind it.

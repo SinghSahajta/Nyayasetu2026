@@ -290,22 +290,6 @@ html:not(.dark) .cursor-glow {
   display: block; position: fixed; inset: 0; z-index: 1500; pointer-events: none; mix-blend-mode: multiply;
   background: radial-gradient(460px circle at var(--mx, 50%) var(--my, -30%), rgba(15, 55, 70, .085), transparent 65%);
 }
-.cursor-texture { display: none; }
-html:not(.dark) .cursor-texture {
-  display: block; position: fixed; inset: 0; z-index: -1; pointer-events: none;
-  background-image: radial-gradient(rgba(14, 101, 119, .13) 1px, transparent 1.4px);
-  background-size: 22px 22px;
-  background-position: calc(var(--px, 0) * -24px) calc(var(--py, 0) * -24px);
-}
-/* Same dots, much stronger, but only in a circle around the cursor. */
-html:not(.dark) .cursor-texture::after {
-  content: ''; position: absolute; inset: 0;
-  background-image: radial-gradient(rgba(14, 101, 119, .85) 1.7px, transparent 2.1px);
-  background-size: 22px 22px;
-  background-position: calc(var(--px, 0) * -24px) calc(var(--py, 0) * -24px);
-  -webkit-mask-image: radial-gradient(320px circle at var(--mx, 50%) var(--my, -30%), #000, transparent 70%);
-  mask-image: radial-gradient(320px circle at var(--mx, 50%) var(--my, -30%), #000, transparent 70%);
-}
 /* A faint paper grain on the smoke background. */
 html:not(.dark) .hero-smoke {
   background-image:
@@ -324,17 +308,7 @@ html:not(.dark) .bg-white.rounded-xl:not(.glow-card):hover, html:not(.dark) .bg-
   box-shadow: 0 0 0 1px rgba(14, 101, 119, .15), 0 12px 32px -10px rgba(14, 101, 119, .5);
 }
 
-/* Light mode: the dot layer sits behind the page, so page-wide backgrounds must let it show through.
-   Cards (bg-white rounded) stay opaque and cover the dots. */
-html:not(.dark) .hero-smoke,
-html:not(.dark) section.bg-white,
-html:not(.dark) section.bg-gray-50,
-html:not(.dark) .min-h-screen.bg-gray-50,
-html:not(.dark) .min-h-screen.bg-white {
-  background-color: transparent;
-}
 
-/* Home hero: the reel sits behind the headline, a veil keeps the text legible. No dots on this page. */
-html[data-no-dots] .cursor-texture { display: none !important; }
+/* Home hero: the reel sits behind the headline, a veil keeps the text legible. */
 .hero-veil { background: radial-gradient(ellipse 46% 40% at 50% 50%, rgba(241, 245, 246, .84), rgba(241, 245, 246, .5) 62%, rgba(241, 245, 246, .1)); }
 .dark .hero-veil { background: radial-gradient(ellipse 46% 40% at 50% 50%, rgba(14, 26, 32, .86), rgba(14, 26, 32, .52) 62%, rgba(14, 26, 32, .12)); }

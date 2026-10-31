@@ -6,7 +6,7 @@ const CARD = '.bg-white.rounded-xl, .bg-white.rounded-2xl';
 
 /**
  * Pointer effects. A halo follows the pointer (light in dark mode, smoke in light mode), the card under it
- * gets a spotlight, and the background texture and smoke drift against the pointer.
+ * gets a spotlight, and the smoke blobs drift against the pointer.
  * --mx/--my: eased pointer position in px. --px/--py: eased pointer position as -1..1 across the screen.
  */
 export default function CursorGlow() {
@@ -45,10 +45,5 @@ export default function CursorGlow() {
     return () => { window.removeEventListener('pointermove', onMove); cancelAnimationFrame(frame); };
   }, []);
 
-  return (
-    <>
-      <div className="cursor-glow" aria-hidden />
-      <div className="cursor-texture" aria-hidden />
-    </>
-  );
+  return <div className="cursor-glow" aria-hidden />;
 }
