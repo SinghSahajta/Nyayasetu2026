@@ -49,7 +49,7 @@ function createAdminClient(): SupabaseClient {
 
 export const supabaseAdmin: SupabaseClient = createAdminClient();
 
-// Columns safe to show the public: never citizen_phone, citizen_name or citizen_id.
+// Columns safe to show the public: never citizen_phone or reporter_device.
 export const PUBLIC_COMPLAINT_COLUMNS =
   'id, uid, title, category, department_id, description, location_text, landmark, latitude, longitude, city, state, ward, zone, ' +
   'status, urgency, proof_image_urls, sla_deadline, is_escalated, resolution_notes, resolution_proof_url, citizen_rating, ' +

@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sendOTP } from '@/lib/otp';
+import { clientIp, limited } from '@/lib/ratelimit';
 
 export async function POST(request: NextRequest) {
   try {
+    if (limited(`otp:${clientIp(request)}`, 5, 10 * 60_000)) {
+      return NextResponse.json({ success: false, message: 'Too many OTP requests. Please wait a few minutes.' }, { status: 429 });
+    }
     const body = await request.json();
     const { phone } = body;
 

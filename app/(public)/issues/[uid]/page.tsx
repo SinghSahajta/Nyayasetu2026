@@ -10,7 +10,7 @@ import SLACountdown from '@/components/complaints/SLACountdown';
 import CitizenFeedback from '@/components/complaints/CitizenFeedback';
 import AuditLog from '@/components/accountability/AuditLog';
 import RtiDraft from '@/components/accountability/RtiDraft';
-import PhoneVerifyFlow from '@/components/complaints/PhoneVerifyFlow';
+import { getDeviceId } from '@/lib/device';
 import { useTranslation } from 'react-i18next';
 import { categoryLabel } from '@/constants/categories';
 import type { Complaint, ComplaintStatus, ComplaintTimelineEntry } from '@/types';
@@ -38,7 +38,6 @@ export default function IssuePage({ params }: { params: { uid: string } }) {
   const { t, i18n } = useTranslation();
   const [data, setData] = useState<TrackResponse | null>(null);
   const [error, setError] = useState('');
-  const [confirming, setConfirming] = useState(false);
   const [confirmMsg, setConfirmMsg] = useState('');
 
   const load = useCallback(async () => {
@@ -50,14 +49,13 @@ export default function IssuePage({ params }: { params: { uid: string } }) {
 
   useEffect(() => { load().catch(() => setError(t('common.networkError'))); }, [load, t]);
 
-  const confirm = useCallback(async (token: string) => {
+  const confirm = useCallback(async () => {
     const res = await fetch(`/api/complaints/track/${params.uid}/confirm`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ session_token: token }),
+      body: JSON.stringify({ device_id: getDeviceId() }),
     });
     const d = await res.json();
-    setConfirming(false);
     setConfirmMsg(d.success ? t('detail.thanks', { count: d.confirmations }) : d.message);
     if (d.success) load();
   }, [params.uid, load, t]);
@@ -185,14 +183,10 @@ export default function IssuePage({ params }: { params: { uid: string } }) {
               <div className="bg-white rounded-xl border border-slate-200 p-5">
                 <h2 className="text-sm font-semibold text-gray-900">{t('detail.seeingToo')}</h2>
                 <p className="text-xs text-gray-500 mt-1 mb-3">{t('detail.seeingTooBody')}</p>
-                {confirming ? (
-                  <PhoneVerifyFlow onVerified={(token) => confirm(token)} />
-                ) : (
-                  <button onClick={() => { setConfirming(true); setConfirmMsg(''); }}
-                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-md bg-indigo-700 text-white font-medium hover:bg-indigo-800">
-                    <ThumbsUp className="w-4 h-4" /> {t('detail.iSeeToo')}
-                  </button>
-                )}
+                <button onClick={() => { setConfirmMsg(''); confirm(); }}
+                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-md bg-indigo-700 text-white font-medium hover:bg-indigo-800">
+                  <ThumbsUp className="w-4 h-4" /> {t('detail.iSeeToo')}
+                </button>
                 {confirmMsg && <p className="text-sm text-gray-700 mt-3">{confirmMsg}</p>}
               </div>
             )}

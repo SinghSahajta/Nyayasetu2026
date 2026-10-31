@@ -44,26 +44,12 @@ export async function GET(
       departmentName = dept?.name || null;
     }
 
-    // Citizen info
-    let citizenName: string | null = null;
-    let citizenPhone: string | null = null;
-    if (complaint.citizen_id) {
-      const { data: citizen } = await supabaseAdmin
-        .from('users')
-        .select('full_name, phone')
-        .eq('id', complaint.citizen_id)
-        .single();
-      citizenName = citizen?.full_name || null;
-      citizenPhone = citizen?.phone || null;
-    }
-
     return NextResponse.json({
       success: true,
       complaint,
       updates: updates || [],
       department_name: departmentName,
-      citizen_name: citizenName,
-      citizen_phone: citizenPhone,
+      citizen_phone: complaint.consent_phone ? complaint.citizen_phone : null,
     });
   } catch (err) {
     console.error('[API] officer complaint detail error:', err);

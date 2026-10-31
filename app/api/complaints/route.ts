@@ -7,6 +7,7 @@ import { generateComplaintUID } from '@/lib/utils';
 import { assessSeverity } from '@/lib/ai-severity';
 import { fetchGeoContext, reverseGeocode, inIndia } from '@/lib/geo';
 import { findNearby, rescoreComplaint } from '@/lib/scoring';
+import { clientIp, limited } from '@/lib/ratelimit';
 import type { FileComplaintRequest, FileComplaintResponse } from '@/types';
 import { ComplaintCategory, ComplaintStatus } from '@/types';
 
@@ -21,13 +22,14 @@ function fail(message: string, status: number) {
 
 export async function POST(request: NextRequest) {
   try {
+    if (limited(`file:${clientIp(request)}`, 10, 60 * 60_000)) return fail('Too many complaints from this network. Please try again later.', 429);
     const body: FileComplaintRequest = await request.json();
-    const { session_token, name, title, category, description, address, landmark, ward, latitude, longitude, photo } = body;
+    const { session_token, consent_phone, device_id, title, category, description, address, landmark, ward, latitude, longitude, photo } = body;
 
     // --- Validate input (trust boundary) ---
     if (!session_token) return fail('Session token is required.', 400);
-    if (!name?.trim() || !title?.trim() || !category || !description?.trim()) {
-      return fail('Name, title, category and description are required.', 400);
+    if (!title?.trim() || !category || !description?.trim()) {
+      return fail('Title, category and description are required.', 400);
     }
     if (!Object.values(ComplaintCategory).includes(category)) return fail('Unknown category.', 400);
     if (description.trim().length < 30) return fail('Description must be at least 30 characters.', 400);
@@ -56,27 +58,12 @@ export async function POST(request: NextRequest) {
     const now = new Date();
     const slaDeadline = calculateSLADeadline(classification.category, now);
 
-    // --- Ensure citizen exists ---
-    let citizenId: string;
-    const { data: existing } = await supabaseAdmin.from('users').select('id').eq('phone', session.phone).limit(1);
-    if (existing?.length) {
-      citizenId = existing[0].id;
-      await supabaseAdmin.from('users').update({ full_name: name }).eq('id', citizenId);
-    } else {
-      const { data: created, error } = await supabaseAdmin
-        .from('users').insert({ phone: session.phone, full_name: name, role: 'citizen' }).select('id').single();
-      if (error || !created) {
-        console.error('[API] citizen insert error:', error?.message);
-        return fail('Failed to register citizen.', 500);
-      }
-      citizenId = created.id;
-    }
-
     // --- Insert complaint (retry once on the rare UID collision) ---
     const row = {
-      citizen_id: citizenId,
-      citizen_phone: session.phone,
-      citizen_name: name,
+      // The phone only proved this is a real person. It is kept (for the assigned officer) if the citizen opted in.
+      citizen_phone: consent_phone === true ? session.phone : null,
+      consent_phone: consent_phone === true,
+      reporter_device: typeof device_id === 'string' ? device_id.slice(0, 64) : null,
       title: title.trim(),
       category: classification.category,
       department_id: classification.department_id,
@@ -118,9 +105,12 @@ export async function POST(request: NextRequest) {
     await supabaseAdmin.from('complaint_updates').insert({
       complaint_id: complaint.id,
       status: ComplaintStatus.SUBMITTED,
-      changed_by: citizenId,
+      changed_by: 'citizen',
       public_note: 'Issue reported by a citizen.',
     });
+
+    // The OTP row also holds the number; it has done its job.
+    await supabaseAdmin.from('otp_verifications').delete().eq('phone', session.phone);
 
     // --- Assign to the least busy officer in the department ---
     const officerId = await leastLoadedOfficer(classification.department_id);

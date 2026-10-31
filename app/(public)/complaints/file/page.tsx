@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import { getDeviceId } from '@/lib/device';
 import {
   Phone,
   FileText,
@@ -67,7 +68,7 @@ export default function FileComplaintPage() {
   const [phone, setPhone] = useState('');
 
   // Step 2: Complaint form
-  const [name, setName] = useState('');
+  const [consentPhone, setConsentPhone] = useState(false);
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState<ComplaintCategory | null>(null);
   const [description, setDescription] = useState('');
@@ -147,7 +148,6 @@ export default function FileComplaintPage() {
   // ---- Step 2 validation ----
   const validateForm = useCallback((): boolean => {
     const errors: Record<string, string> = {};
-    if (!name.trim()) errors.name = t('file.nameReq');
     if (!title.trim()) errors.title = t('file.titleReq');
     if (!category) errors.category = t('file.catReq');
     if (!description.trim()) errors.description = t('file.descReq');
@@ -155,7 +155,7 @@ export default function FileComplaintPage() {
     if (!location) errors.location = t('file.pinReq');
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
-  }, [name, title, category, description, location, t]);
+  }, [title, category, description, location, t]);
 
   const handleNextToReview = useCallback(() => {
     if (!validateForm()) return;
@@ -176,7 +176,8 @@ export default function FileComplaintPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           session_token: sessionToken,
-          name: name.trim(),
+          consent_phone: consentPhone,
+          device_id: getDeviceId(),
           title: title.trim(),
           category,
           description: description.trim(),
@@ -204,14 +205,14 @@ export default function FileComplaintPage() {
     } finally {
       setSubmitting(false);
     }
-  }, [sessionToken, name, title, category, description, address, landmark, ward, location, photo, t]);
+  }, [sessionToken, consentPhone, title, category, description, address, landmark, ward, location, photo, t]);
 
   // ---- Step 4: Reset ----
   const handleFileAnother = useCallback(() => {
     setStep(1);
     setSessionToken('');
     setPhone('');
-    setName('');
+    setConsentPhone(false);
     setTitle('');
     setCategory(null);
     setDescription('');
@@ -292,22 +293,14 @@ export default function FileComplaintPage() {
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-5 max-w-3xl mx-auto">
             <h2 className="text-lg font-semibold text-gray-900 mb-2">{t('complaints.detailsTitle', { defaultValue: 'Complaint Details' })}</h2>
 
-            {/* Name */}
-            <div>
-              <label htmlFor="complainant-name" className="block text-sm font-medium text-gray-700 mb-1">
-                {t('complaints.yourName', { defaultValue: 'Your Name' })} <span className="text-red-500">*</span>
-              </label>
-              <input
-                id="complainant-name"
-                type="text"
-                value={name}
-                onChange={(e) => { setName(e.target.value); setFormErrors((p) => ({ ...p, name: '' })); }}
-                placeholder={t('file.namePh')}
-                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 outline-none
-                  focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all text-gray-900"
-              />
-              {formErrors.name && <p className="text-xs text-red-600 mt-1">{formErrors.name}</p>}
-            </div>
+            {/* Phone consent: the number is only ever used to let the assigned officer call back */}
+            <label className="flex items-start gap-3 p-4 rounded-lg border border-gray-200 cursor-pointer">
+              <input type="checkbox" checked={consentPhone} onChange={(e) => setConsentPhone(e.target.checked)} className="mt-1 h-4 w-4" />
+              <span className="text-sm">
+                <span className="block font-medium text-gray-900">{t('file.consentTitle')}</span>
+                <span className="block text-gray-500 mt-0.5">{t('file.consentBody')}</span>
+              </span>
+            </label>
 
             {/* Title */}
             <div>
@@ -490,12 +483,8 @@ export default function FileComplaintPage() {
 
               <div className="space-y-3">
                 <div className="grid grid-cols-3 gap-2 text-sm border-b border-gray-100 pb-3">
-                  <span className="text-gray-500">{t('complaints.name', { defaultValue: 'Name' })}</span>
-                  <span className="col-span-2 text-gray-900 font-medium">{name}</span>
-                </div>
-                <div className="grid grid-cols-3 gap-2 text-sm border-b border-gray-100 pb-3">
                   <span className="text-gray-500">{t('complaints.phone', { defaultValue: 'Phone' })}</span>
-                  <span className="col-span-2 text-gray-900">+91 {phone}</span>
+                  <span className="col-span-2 text-gray-900">{consentPhone ? t('file.phoneKept', { phone }) : t('file.phoneNotKept')}</span>
                 </div>
                 <div className="grid grid-cols-3 gap-2 text-sm border-b border-gray-100 pb-3">
                   <span className="text-gray-500">{t('complaints.titleLabel', { defaultValue: 'Title' })}</span>
@@ -668,7 +657,7 @@ export default function FileComplaintPage() {
 
             {/* Share instructions */}
             <div className="mt-6 p-4 rounded-xl bg-amber-50 border border-amber-200 text-left">
-              <p className="text-sm text-amber-800" dangerouslySetInnerHTML={{ __html: t('complaints.saveIdDesc', { defaultValue: "<strong>Save your Complaint ID!</strong> You'll need it to track progress. Share it with anyone helping you follow up on this issue." }) }} />
+              <p className="text-sm text-amber-800">{t('file.tokenWarn')}</p>
             </div>
           </div>
         )}

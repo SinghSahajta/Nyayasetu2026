@@ -9,7 +9,6 @@ import {
   MapPin,
   Calendar,
   Tag,
-  UserCircle,
   Phone,
   Building2,
   Upload,
@@ -74,7 +73,6 @@ export default function OfficerComplaintDetailPage() {
   const [complaint, setComplaint] = useState<Complaint | null>(null);
   const [updates, setUpdates] = useState<ComplaintTimelineEntry[]>([]);
   const [departmentName, setDepartmentName] = useState('');
-  const [citizenName, setCitizenName] = useState('');
   const [citizenPhone, setCitizenPhone] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -110,7 +108,6 @@ export default function OfficerComplaintDetailPage() {
         setComplaint(data.complaint);
         setUpdates(data.updates || []);
         setDepartmentName(data.department_name || '');
-        setCitizenName(data.citizen_name || '');
         setCitizenPhone(data.citizen_phone || '');
       } else {
         setError(data.message || 'Failed to load.');
@@ -286,18 +283,10 @@ export default function OfficerComplaintDetailPage() {
               <Calendar className="w-4 h-4 text-gray-400" /><span className="text-gray-500 w-24">Filed</span>
               <span className="text-gray-900">{formatDate(complaint.created_at)}</span>
             </div>
-            {citizenName && (
-              <div className="flex items-center gap-3 text-sm">
-                <UserCircle className="w-4 h-4 text-gray-400" /><span className="text-gray-500 w-24">Citizen</span>
-                <span className="text-gray-900">{citizenName}</span>
-              </div>
-            )}
-            {citizenPhone && (
-              <div className="flex items-center gap-3 text-sm">
-                <Phone className="w-4 h-4 text-gray-400" /><span className="text-gray-500 w-24">Phone</span>
-                <span className="text-gray-900">+91 {citizenPhone}</span>
-              </div>
-            )}
+            <div className="flex items-center gap-3 text-sm">
+              <Phone className="w-4 h-4 text-gray-400" /><span className="text-gray-500 w-24">Contact</span>
+              <span className="text-gray-900">{citizenPhone ? `+91 ${citizenPhone}` : 'Citizen chose to stay anonymous. Post a public note to ask them anything.'}</span>
+            </div>
           </div>
 
           {/* Description */}

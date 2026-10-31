@@ -626,7 +626,12 @@
     "descReq": "Description is required.",
     "descMin": "Description must be at least 30 characters.",
     "pinReq": "Pin the issue on the map.",
-    "photoErr": "Could not read that image."
+    "photoErr": "Could not read that image.",
+    "consentTitle": "Let the assigned officer call me (optional)",
+    "consentBody": "Leave this off to stay fully anonymous. We never store your name. If you tick it, only the officer handling this complaint sees your number, and it is erased when the complaint is resolved.",
+    "phoneKept": "+91 {{phone}} (shared with the assigned officer only)",
+    "phoneNotKept": "Verified, then deleted. Not stored.",
+    "tokenWarn": "Save your Complaint ID now. It is the only way to track this complaint. We hold no name or number that could recover it, so if you lose it we cannot find it for you."
   },
   "reco": {
     "q": {

@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Officer and department names come joined in the same query.
-    const enriched = (complaints || []).map(({ officer, department, ...c }) => ({
+    const enriched = (complaints || []).map(({ officer, department, citizen_phone, reporter_device, ...c }) => ({
       ...c,
       officer_name: (officer as { full_name: string } | null)?.full_name ?? null,
       department_name: (department as { name: string } | null)?.name ?? null,

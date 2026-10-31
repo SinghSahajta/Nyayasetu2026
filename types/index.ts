@@ -93,7 +93,7 @@ export const CATEGORY_DEPARTMENT_MAP: Record<ComplaintCategory, string> = {
 export interface Complaint {
   id: string;
   uid: string;
-  citizen_id: string;
+  citizen_id: string | null;
   title: string;
   category: ComplaintCategory;
   department_id: string;
@@ -330,7 +330,8 @@ export interface AuthSession {
 
 export interface FileComplaintRequest {
   session_token: string;
-  name: string;
+  consent_phone: boolean; // keep the verified number for the assigned officer
+  device_id: string;
   title: string;
   category: ComplaintCategory;
   description: string;
