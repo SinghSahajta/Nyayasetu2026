@@ -335,3 +335,46 @@ html:not(.dark) .hero-smoke {
     radial-gradient(60% 45% at calc(18% + var(--px, 0) * 7%) calc(22% + var(--py, 0) * 9%), rgba(14, 101, 119, .07), transparent 70%),
     radial-gradient(55% 45% at calc(82% + var(--px, 0) * -7%) calc(68% + var(--py, 0) * -9%), rgba(160, 125, 70, .12), transparent 70%);
 }
+
+/* ---- Dark mode: forms sit on warm cream "paper" so they read as a form, not another dark card ----
+   Opt in with className="paper". Overrides the dark remap above for everything inside the card. */
+.dark .paper,
+.dark .bg-white.rounded-xl.paper,
+.dark .bg-white.rounded-xl.paper:hover {
+  background-color: #f6ead6;
+  background-image: linear-gradient(160deg, #fbf1e1 0%, #f6e6cf 55%, #f1dcc0 100%);
+  backdrop-filter: none;
+  border-color: #d9b98c;
+  box-shadow: 0 18px 40px -18px rgba(0, 0, 0, .55), 0 0 0 1px rgba(217, 185, 140, .35), inset 0 1px 0 rgba(255, 255, 255, .6);
+  color: #3a2a1c;
+}
+.dark .paper .bg-white,
+.dark .paper .bg-white.rounded-xl { background-color: #fffaf1; background-image: none; box-shadow: none; backdrop-filter: none; border-color: #d9b98c; }
+.dark .paper .bg-gray-50 { background-color: #f1e2c9; }
+.dark .paper .bg-gray-100 { background-color: #ead8bb; }
+.dark .paper .bg-indigo-50 { background-color: #e1eef0; }
+.dark .paper .bg-amber-50 { background-color: #fbe7c3; }
+.dark .paper .bg-red-50 { background-color: #fbe0d8; }
+.dark .paper .text-gray-900, .dark .paper .text-gray-800 { color: #3a2a1c; }
+.dark .paper .text-gray-700, .dark .paper .text-gray-600 { color: #5b4531; }
+.dark .paper .text-gray-500 { color: #7c6449; }
+.dark .paper .text-gray-400, .dark .paper .text-gray-300 { color: #9a8266; }
+.dark .paper .text-indigo-500, .dark .paper .text-indigo-600, .dark .paper .text-indigo-700 { color: #12667a; }
+.dark .paper .text-indigo-800, .dark .paper .text-indigo-900 { color: #0b4352; }
+.dark .paper .text-amber-700, .dark .paper .text-amber-800, .dark .paper .text-amber-900 { color: #6b4510; }
+.dark .paper .text-red-500, .dark .paper .text-red-600, .dark .paper .text-red-700 { color: #b4301f; }
+.dark .paper .text-green-600, .dark .paper .text-green-700, .dark .paper .text-green-800 { color: #1f7a45; }
+.dark .paper .border-gray-100, .dark .paper .border-gray-200, .dark .paper .border-slate-200 { border-color: #e2c9a2; }
+.dark .paper .border-gray-300, .dark .paper .border-slate-300 { border-color: #cfb083; }
+.dark .paper .border-indigo-100, .dark .paper .border-indigo-200 { border-color: #a9cbd3; }
+.dark .paper .border-amber-200 { border-color: #e5c58a; }
+.dark .paper .border-red-200 { border-color: #efb4a8; }
+.dark .paper input, .dark .paper textarea, .dark .paper select {
+  background-color: #fffaf1; color: #3a2a1c; border-color: #d2b48c;
+}
+.dark .paper input::placeholder, .dark .paper textarea::placeholder { color: #a8927a; }
+.dark .paper input:focus, .dark .paper textarea:focus, .dark .paper select:focus { border-color: #1a7d90; }
+.dark .paper { color-scheme: light; }
+.dark .paper .text-slate-900, .dark .paper .text-slate-800 { color: #3a2a1c; }
+.dark .paper .text-slate-700, .dark .paper .text-slate-600, .dark .paper .text-slate-500 { color: #5b4531; }
+.dark .paper .hover\:bg-slate-50:hover { background-color: #f1e2c9; }

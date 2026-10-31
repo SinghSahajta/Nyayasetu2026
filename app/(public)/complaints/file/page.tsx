@@ -283,14 +283,14 @@ export default function FileComplaintPage() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* ===== STEP 1: Phone Verification ===== */}
         {step === 1 && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 max-w-3xl mx-auto">
+          <div className="paper bg-white rounded-xl border border-slate-200 shadow-sm p-6 max-w-3xl mx-auto">
             <PhoneVerifyFlow onVerified={handlePhoneVerified} />
           </div>
         )}
 
         {/* ===== STEP 2: Complaint Details ===== */}
         {step === 2 && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-5 max-w-3xl mx-auto">
+          <div className="paper bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-5 max-w-3xl mx-auto">
             <h2 className="text-lg font-semibold text-gray-900 mb-2">{t('complaints.detailsTitle', { defaultValue: 'Complaint Details' })}</h2>
 
             {/* Phone consent: the number is only ever used to let the assigned officer call back */}
@@ -478,7 +478,7 @@ export default function FileComplaintPage() {
         {/* ===== STEP 3: Review ===== */}
         {step === 3 && (
           <div className="space-y-5 max-w-3xl mx-auto">
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+            <div className="paper bg-white rounded-xl border border-slate-200 shadow-sm p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('complaints.reviewYourComplaint', { defaultValue: 'Review Your Complaint' })}</h2>
 
               <div className="space-y-3">
@@ -534,7 +534,7 @@ export default function FileComplaintPage() {
 
             {/* AI Classification Preview */}
             {classification && (
-              <div className="bg-indigo-50 rounded-xl border border-indigo-200 p-5">
+              <div className="paper bg-indigo-50 rounded-xl border border-indigo-200 p-5">
                 <h3 className="text-sm font-semibold text-indigo-800 mb-3">{t('complaints.aiPreview', { defaultValue: '🤖 AI Classification Preview' })}</h3>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
@@ -602,7 +602,7 @@ export default function FileComplaintPage() {
 
         {/* ===== STEP 4: Success ===== */}
         {step === 4 && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-8 text-center max-w-3xl mx-auto">
+          <div className="paper bg-white rounded-xl border border-slate-200 shadow-sm p-8 text-center max-w-3xl mx-auto">
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-5">
               <CheckCircle className="w-10 h-10 text-green-600" />
             </div>
